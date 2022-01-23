@@ -12,7 +12,7 @@ export default function App() {
   const { connection, setConnection, gameState, handleMessage } =
     useGameState();
   const { ws } = useWebSocket({ setConnection, handleMessage });
-  const { handleSetName, handleCreate } = useSendMessage({
+  const { handleSetName, handleCreate, handleJoin } = useSendMessage({
     clientId: connection.clientId,
     ws,
   });
@@ -26,7 +26,13 @@ export default function App() {
         {gameState.view === "setName" ? (
           <NameForm handleSetName={handleSetName} />
         ) : null}
-        {gameState.view === "create-join" ? <CreateJoin /> : null}
+        {gameState.view === "create-join" ? (
+          <CreateJoin
+            name={gameState.name}
+            handleCreate={handleCreate}
+            handleJoin={handleJoin}
+          />
+        ) : null}
       </Container>
       {connection.ws === "LOADING" ? <Loader /> : null}
       {connection.ws === "CLOSED" ? <Error /> : null}

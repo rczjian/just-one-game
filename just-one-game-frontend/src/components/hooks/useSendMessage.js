@@ -1,7 +1,7 @@
 export default function useSendMessage({ clientId, ws }) {
   const handleSetName = (name) => {
     if (!name) {
-      name = "no name";
+      name = "nameless";
     }
     const payload = {
       action: "setName",
@@ -21,5 +21,9 @@ export default function useSendMessage({ clientId, ws }) {
     ws.current.send(JSON.stringify(payload));
   };
 
-  return { handleSetName, handleCreate };
+  const handleJoin = (roomCode) => {
+    console.log(`join ${roomCode}`);
+  };
+
+  return { handleSetName, handleCreate, handleJoin };
 }
