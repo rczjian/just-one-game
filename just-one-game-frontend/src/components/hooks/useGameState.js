@@ -1,7 +1,10 @@
 import React from "react";
 
 export default function useGameState() {
-  const [clientId, setClientId] = React.useState(null);
+  const [connection, setConnection] = React.useState({
+    clientId: undefined,
+    ws: "LOADING",
+  });
   const [gameState, setGameState] = React.useState({
     view: "setName",
   });
@@ -9,7 +12,9 @@ export default function useGameState() {
   const handleMessage = (message) => {
     if (message.action === "connect") {
       if (message.clientId !== null) {
-        setClientId(message.clientId);
+        setConnection((prevState) => {
+          return { ...prevState, ws: "OPEN", clientId: message.clientId };
+        });
         console.log(`Client ID set to ${message.clientId}`);
       } else {
         console.log(message.data.error);
@@ -31,5 +36,5 @@ export default function useGameState() {
     }
   };
 
-  return { clientId, gameState, handleMessage };
+  return { connection, setConnection, gameState, handleMessage };
 }

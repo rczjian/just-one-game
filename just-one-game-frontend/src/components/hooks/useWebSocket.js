@@ -1,12 +1,17 @@
 import React from "react";
 
-export default function useWebSocket(handleMessage) {
+export default function useWebSocket({ setConnection, handleMessage }) {
   const ws = React.useRef(null);
 
   React.useEffect(() => {
     ws.current = new WebSocket("ws://localhost:8081");
     ws.current.onopen = () => console.log("ws opened");
-    ws.current.onclose = () => console.log("ws closed");
+    ws.current.onclose = () => {
+      console.log("ws closed");
+      setConnection((prevState) => {
+        return { ...prevState, ws: "CLOSED" };
+      });
+    };
     return () => ws.current.close();
   }, []);
 
