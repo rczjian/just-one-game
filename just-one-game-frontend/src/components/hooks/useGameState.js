@@ -22,7 +22,7 @@ export default function useGameState() {
     }
 
     if (message.action === "setName") {
-      if (message.data.status === "success") {
+      if (message.data.success) {
         setGameState({
           ...gameState,
           view: "create-join",
@@ -32,7 +32,11 @@ export default function useGameState() {
     }
 
     if (message.action === "create") {
-      console.log(`game created with id ${message.game.id}`);
+      console.log(`game created with id ${message.data.game.id}`);
+    }
+
+    if (message.action === "join") {
+      console.log(`joined game of id ${message.data.game.id}`);
     }
   };
 

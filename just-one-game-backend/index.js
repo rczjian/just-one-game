@@ -53,10 +53,10 @@ wsServer.on("request", (req) => {
   connection.on("message", (message) => {
     const res = JSON.parse(message.utf8Data);
     console.log("=====================================");
-    console.log("message received!");
-    console.log(res);
+    console.log("message received:", res);
     handleAction({ res, clients, games });
     console.log("current server state:");
-    console.log(Object.entries(clients));
+    console.log("clients =", Object.entries(clients));
+    console.log("games =", JSON.stringify(games));
   });
 });

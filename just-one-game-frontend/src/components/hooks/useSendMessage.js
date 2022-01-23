@@ -22,7 +22,14 @@ export default function useSendMessage({ clientId, ws }) {
   };
 
   const handleJoin = (roomCode) => {
-    console.log(`join ${roomCode}`);
+    const payload = {
+      action: "join",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
   };
 
   return { handleSetName, handleCreate, handleJoin };

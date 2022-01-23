@@ -7,22 +7,65 @@ const handleAction = ({ res, clients, games }) => {
 
     const payload = {
       action: "setName",
-      data: { status: "success", name: res.data.name },
+      data: { success: true, name: res.data.name },
     };
     con.send(JSON.stringify(payload));
   }
 
   if (res.action === "create") {
-    const gameId = Math.round(Math.random() * 30);
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let gameId = "";
+    for (let i = 0; i < 6; i++) {
+      gameId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
     games[gameId] = {
       id: gameId,
-      info: "hello",
+      players: [{ clientId, name: clients[clientId].name }],
     };
 
     const payload = {
       action: "create",
-      game: games[gameId],
+      data: {
+        game: games[gameId],
+      },
     };
+
+    const con = clients[clientId].connection;
+    con.send(JSON.stringify(payload));
+  }
+
+  if (res.action === "join") {
+    let payload = {};
+    if (!games[res.data.gameId]) {
+      payload = {
+        action: "join",
+        data: {
+          success: false,
+          error: "no such game id",
+        },
+      };
+    } else if (games[res.data.gameId].players.length >= 7) {
+      payload = {
+        action: "join",
+        data: {
+          success: false,
+          error: "room already has max of 7 players",
+        },
+      };
+    } else {
+      games[res.data.gameId].players.push({
+        clientId,
+        name: clients[clientId].name,
+      });
+      payload = {
+        action: "join",
+        data: {
+          success: true,
+          game: games[res.data.gameId],
+        },
+      };
+    }
 
     const con = clients[clientId].connection;
     con.send(JSON.stringify(payload));
