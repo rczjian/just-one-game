@@ -6,6 +6,7 @@ import Loader from "./Loader";
 import Error from "./Error";
 import NameForm from "./NameForm";
 import CreateJoin from "./CreateJoin";
+import Game from "./Game";
 import styled from "styled-components";
 
 export default function App() {
@@ -32,6 +33,9 @@ export default function App() {
             handleCreate={handleCreate}
             handleJoin={handleJoin}
           />
+        ) : null}
+        {gameState.view === "game" ? (
+          <Game game={gameState.game} clientId={connection.clientId} />
         ) : null}
       </Container>
       {connection.ws === "LOADING" ? <Loader /> : null}

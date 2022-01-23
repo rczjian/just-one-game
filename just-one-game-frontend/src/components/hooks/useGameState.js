@@ -23,20 +23,40 @@ export default function useGameState() {
 
     if (message.action === "setName") {
       if (message.data.success) {
-        setGameState({
-          ...gameState,
-          view: "create-join",
-          name: message.data.name,
+        setGameState((prevState) => {
+          return {
+            ...prevState,
+            view: "create-join",
+            name: message.data.name,
+          };
         });
       }
     }
 
     if (message.action === "create") {
+      setGameState((prevState) => {
+        return {
+          ...prevState,
+          view: "game",
+          game: message.data.game,
+        };
+      });
       console.log(`game created with id ${message.data.game.id}`);
     }
 
     if (message.action === "join") {
-      console.log(`joined game of id ${message.data.game.id}`);
+      if (message.data.success) {
+        setGameState((prevState) => {
+          return {
+            ...prevState,
+            view: "game",
+            game: message.data.game,
+          };
+        });
+        console.log(`joined game id ${message.data.game.id}`);
+      } else {
+        console.log(`error: ${message.data.error}`);
+      }
     }
   };
 
