@@ -32,5 +32,9 @@ export default function useSendMessage({ clientId, ws }) {
     ws.current.send(JSON.stringify(payload));
   };
 
-  return { handleSetName, handleCreate, handleJoin };
+  const handleNext = () => {
+    console.log("ill go next!");
+  };
+
+  return { handleSetName, handleCreate, handleJoin, handleNext };
 }

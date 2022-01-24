@@ -13,10 +13,11 @@ export default function App() {
   const { connection, setConnection, gameState, handleMessage } =
     useGameState();
   const { ws } = useWebSocket({ setConnection, handleMessage });
-  const { handleSetName, handleCreate, handleJoin } = useSendMessage({
-    clientId: connection.clientId,
-    ws,
-  });
+  const { handleSetName, handleCreate, handleJoin, ...gameHandlers } =
+    useSendMessage({
+      clientId: connection.clientId,
+      ws,
+    });
   console.log("connection", connection);
   console.log("gameState", gameState);
 
@@ -35,7 +36,11 @@ export default function App() {
           />
         ) : null}
         {gameState.view === "game" ? (
-          <Game game={gameState.game} clientId={connection.clientId} />
+          <Game
+            game={gameState.game}
+            clientId={connection.clientId}
+            gameHandlers={gameHandlers}
+          />
         ) : null}
       </Container>
       {connection.ws === "LOADING" ? <Loader /> : null}
@@ -52,5 +57,5 @@ const Container = styled.div`
 
 const Header = styled.div`
   font-weight: 600;
-  font-size: 50px;
+  font-size: 42px;
 `;

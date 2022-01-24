@@ -55,6 +55,7 @@ wsServer.on("request", (req) => {
     handleAction({ res, clients, games });
     console.log("current server state:");
     console.log("clients =", Object.entries(clients));
-    console.log("games =", JSON.stringify(games));
+    process.stdout.write("games = ");
+    console.dir(Object.values(games), { depth: 3 });
   });
 });
