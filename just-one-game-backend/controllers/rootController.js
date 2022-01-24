@@ -54,6 +54,10 @@ const handleAction = ({ res, clients, games }) => {
         },
       };
     } else {
+      const existingConnections = games[res.data.gameId].players.map(
+        (v) => clients[v.clientId].connection
+      );
+
       games[res.data.gameId].players.push({
         clientId,
         name: clients[clientId].name,
@@ -65,6 +69,16 @@ const handleAction = ({ res, clients, games }) => {
           game: games[res.data.gameId],
         },
       };
+
+      const broadcast = {
+        action: "broadcast-join",
+        data: {
+          info: `${clients[clientId].name} joined the room!`,
+          game: games[res.data.gameId],
+        },
+      };
+      existingConnections.forEach((con) => con.send(JSON.stringify(broadcast)));
+      console.log(`broadcasted new joiner to game ${res.data.gameId}`);
     }
 
     const con = clients[clientId].connection;

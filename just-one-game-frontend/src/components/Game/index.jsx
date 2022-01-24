@@ -14,7 +14,7 @@ export default function Game({ game, clientId }) {
           <div key={i}>
             {player.name}
             {player.clientId === clientId ? (
-              <_Badge bg="secondary">YOU!</_Badge>
+              <CustomBadge bg="secondary">YOU!</CustomBadge>
             ) : null}
           </div>
         ))}
@@ -41,6 +41,6 @@ const Header = styled.div`
   text-decoration: underline;
 `;
 
-const _Badge = styled(Badge)`
+const CustomBadge = styled(Badge)`
   margin-left: 8px;
 `;

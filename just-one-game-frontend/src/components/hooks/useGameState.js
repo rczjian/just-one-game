@@ -58,6 +58,17 @@ export default function useGameState() {
         console.log(`error: ${message.data.error}`);
       }
     }
+
+    if (message.action === "broadcast-join") {
+      setGameState((prevState) => {
+        return {
+          ...prevState,
+          view: "game",
+          game: message.data.game,
+        };
+      });
+      console.log(message.data.info);
+    }
   };
 
   return { connection, setConnection, gameState, handleMessage };
