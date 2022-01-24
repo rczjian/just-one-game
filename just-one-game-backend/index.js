@@ -10,7 +10,7 @@ const constants = {
   MAX_CLIENTS: 100,
 };
 
-const { handleAction } = require("./controllers/rootController");
+const { handleAction, handleWsClose } = require("./controllers/rootController");
 
 const wsServer = new WebSocketServer({ httpServer: httpServer });
 
@@ -18,10 +18,7 @@ wsServer.on("request", (req) => {
   const connection = req.accept(null, req.origin);
   connection.on("open", () => console.log("opened"));
   connection.on("close", () => {
-    if (clientId) {
-      delete clients[clientId];
-      console.log(`closed, deleted connection for clientId ${clientId}`);
-    }
+    handleWsClose({ clients, games, clientId });
   });
   let clientId;
   if (Object.keys(clients).length >= constants.MAX_CLIENTS) {
@@ -39,7 +36,8 @@ wsServer.on("request", (req) => {
     do {
       clientId = Math.round(Math.random() * (constants.MAX_CLIENTS - 1));
     } while (Object.keys(clients).includes(clientId.toString()));
-    console.log(`new client! clientID = ${clientId}`);
+    console.log("=====================================");
+    console.log(`new client! clientId = ${clientId}`);
     clients[clientId] = { connection: connection };
     console.log(`current client list: ${Object.keys(clients)}`);
 
