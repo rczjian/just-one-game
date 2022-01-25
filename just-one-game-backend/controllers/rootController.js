@@ -84,6 +84,48 @@ const handleAction = ({ res, clients, games }) => {
     const con = clients[clientId].connection;
     con.send(JSON.stringify(payload));
   }
+
+  if (res.action === "next") {
+    let payload = {};
+    if (!games[res.data.gameId].next) {
+      const otherConnections = games[res.data.gameId].players
+        .filter((v) => v.clientId !== clientId)
+        .map((v) => clients[v.clientId].connection);
+
+      games[res.data.gameId].next = {
+        clientId: res.clientId,
+        name: clients[clientId].name,
+      };
+      payload = {
+        action: "next",
+        data: {
+          success: true,
+          game: games[res.data.gameId],
+        },
+      };
+
+      const broadcast = {
+        action: "broadcast-next",
+        data: {
+          info: `${clients[clientId].name} will go next`,
+          game: games[res.data.gameId],
+        },
+      };
+      otherConnections.forEach((con) => con.send(JSON.stringify(broadcast)));
+      console.log(`broadcasted next guesser to game ${res.data.gameId}`);
+    } else {
+      payload = {
+        action: "next",
+        data: {
+          success: false,
+          error: `${games[res.data.gameId].next.name} is in the queue already`,
+        },
+      };
+    }
+
+    const con = clients[clientId].connection;
+    con.send(JSON.stringify(payload));
+  }
 };
 
 const handleWsClose = ({ clients, games, clientId }) => {

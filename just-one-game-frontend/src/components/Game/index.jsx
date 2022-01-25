@@ -2,6 +2,7 @@ import React from "react";
 import { Badge, Button } from "react-bootstrap";
 import styled from "styled-components";
 import HowTo from "./HowTo";
+import Content from "./Content";
 
 export default function Game({ game, clientId, gameHandlers }) {
   const { handleNext } = gameHandlers;
@@ -10,10 +11,10 @@ export default function Game({ game, clientId, gameHandlers }) {
     <>
       <div>Room Code: {game.id}</div>
       <GameContent>
-        <Header>Game Content</Header>
+        <Content game={game} clientId={clientId} gameHandlers={gameHandlers} />
       </GameContent>
       <ControlsContainer>
-        <Button onClick={() => handleNext()}>I'll guess next</Button>
+        <Button onClick={() => handleNext(game.id)}>I'll guess next</Button>
         <Button onClick={() => setShowHowTo(true)}>How to play</Button>
       </ControlsContainer>
       <PlayersContainer>

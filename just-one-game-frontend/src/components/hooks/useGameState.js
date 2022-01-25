@@ -69,6 +69,32 @@ export default function useGameState() {
       });
       console.log(message.data.info);
     }
+
+    if (message.action === "next") {
+      if (message.data.success) {
+        setGameState((prevState) => {
+          return {
+            ...prevState,
+            view: "game",
+            game: message.data.game,
+          };
+        });
+        console.log(`you will go next!`);
+      } else {
+        console.log(`error: ${message.data.error}`);
+      }
+    }
+
+    if (message.action === "broadcast-next") {
+      setGameState((prevState) => {
+        return {
+          ...prevState,
+          view: "game",
+          game: message.data.game,
+        };
+      });
+      console.log(message.data.info);
+    }
   };
 
   return { connection, setConnection, gameState, handleMessage };
