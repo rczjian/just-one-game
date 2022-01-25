@@ -7,7 +7,7 @@ export default function Content({ game, clientId, gameHandlers }) {
       {game.stage === "init" && (
         <Start game={game} clientId={clientId} gameHandlers={gameHandlers} />
       )}
-      {game.stage === "pick" && (
+      {(game.stage === "pick" || game.stage === "hint") && (
         <Number game={game} clientId={clientId} gameHandlers={gameHandlers} />
       )}
     </>

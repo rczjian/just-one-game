@@ -57,8 +57,8 @@ export default function Start({ game, clientId, gameHandlers }) {
     </>
   );
 }
-const ControlsContainer = styled.div`
+export const ControlsContainer = styled.div`
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin: 8px 8px 0px;
 `;

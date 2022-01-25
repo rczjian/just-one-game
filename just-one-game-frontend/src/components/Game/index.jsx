@@ -39,7 +39,7 @@ const GameContent = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 250px;
+  height: 400px;
   width: 300px;
   border: 1px solid gray;
   margin: 4px 0px 8px;

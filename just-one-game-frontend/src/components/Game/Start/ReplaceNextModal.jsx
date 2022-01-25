@@ -22,7 +22,7 @@ export default function ReplaceNextModal({
         Are you sure? You will replace {next} as the next guesser.
       </ModalBody>
       <ModalFooter>
-        <Button variant="secondary" onClick={() => onCancel()}>
+        <Button variant="outline-secondary" onClick={() => onCancel()}>
           Cancel
         </Button>
         <Button onClick={() => onProceed()}>Yes</Button>

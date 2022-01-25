@@ -1,3 +1,10 @@
+const path = require("path");
+const fs = require("fs");
+console.log("initialising cards...");
+const cards = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, "../data/cards.json"))
+);
+
 const handleAction = ({ res, clients, games }) => {
   const clientId = res.clientId;
   const con = clients[clientId].connection;
@@ -136,6 +143,8 @@ const handleAction = ({ res, clients, games }) => {
     games[res.data.gameId].stage = "pick";
     games[res.data.gameId].guesser = games[res.data.gameId].next;
     games[res.data.gameId].next = null;
+    games[res.data.gameId].words =
+      cards[Math.floor(Math.random() * cards.length)];
 
     const broadcast = {
       action: "broadcast-start",
@@ -161,28 +170,29 @@ const handleWsClose = ({ clients, games, clientId }) => {
       game.players = game.players.filter((v) => v.clientId !== clientId);
       if (initLength > game.players.length) {
         console.log(`removed ${clientId} from game ${game.id}`);
-      }
-      if (game.next?.clientId === clientId) {
-        game.next = null;
-      }
-      if (game.players.length === 0) {
-        delete games[game.id];
-        console.log(`closed game ${game.id} due to lack of players`);
-      } else {
-        const remainingConnections = game.players.map(
-          (v) => clients[v.clientId].connection
-        );
-        const broadcast = {
-          action: "broadcast-disconnect",
-          data: {
-            info: `${name} disconnected`,
-            game: game,
-          },
-        };
-        remainingConnections.forEach((con) =>
-          con.send(JSON.stringify(broadcast))
-        );
-        console.log(`broadcasted new game state for game ${game.id}`);
+        if (game.players.length === 0) {
+          delete games[game.id];
+          console.log(`closed game ${game.id} due to lack of players`);
+        } else {
+          if (game.next?.clientId === clientId) {
+            game.next = null;
+          }
+
+          const remainingConnections = game.players.map(
+            (v) => clients[v.clientId].connection
+          );
+          const broadcast = {
+            action: "broadcast-disconnect",
+            data: {
+              info: `${name} disconnected`,
+              game: game,
+            },
+          };
+          remainingConnections.forEach((con) =>
+            con.send(JSON.stringify(broadcast))
+          );
+          console.log(`broadcasted new game state for game ${game.id}`);
+        }
       }
     });
   }

@@ -34,7 +34,7 @@ wsServer.on("request", (req) => {
     connection.close();
   } else {
     do {
-      clientId = Math.round(Math.random() * (constants.MAX_CLIENTS - 1));
+      clientId = Math.floor(Math.random() * constants.MAX_CLIENTS);
     } while (Object.keys(clients).includes(clientId.toString()));
     console.log("=====================================");
     console.log(`new client! clientId = ${clientId}`);
