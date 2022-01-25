@@ -13,7 +13,7 @@ export default function HowTo({ visible, setVisible }) {
       <ModalHeader>
         <ModalTitle>How to play</ModalTitle>
       </ModalHeader>
-      <ModalBody>Take turns to guess the word and give hints</ModalBody>
+      <ModalBody>Take turns guessing and giving hints</ModalBody>
       <ModalFooter>
         <Button onClick={() => setVisible(false)}>OK</Button>
       </ModalFooter>

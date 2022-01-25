@@ -23,4 +23,5 @@ const CustomForm = styled(Form)`
 const CustomFormControl = styled(FormControl)`
   max-width: 200px;
   margin-bottom: 8px;
+  text-align: center;
 `;
