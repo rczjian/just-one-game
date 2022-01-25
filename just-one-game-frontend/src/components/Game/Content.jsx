@@ -1,4 +1,4 @@
-import { Badge } from "react-bootstrap";
+import { Badge, Button } from "react-bootstrap";
 import styled from "styled-components";
 
 export default function Content({ game, clientId, gameHandlers }) {
@@ -10,10 +10,15 @@ export default function Content({ game, clientId, gameHandlers }) {
           <CustomBadge bg="secondary">YOU!</CustomBadge>
         ) : null}
       </div>
+      {game.next?.name ? <CustomButton>Start!</CustomButton> : null}
     </>
   );
 }
 
 const CustomBadge = styled(Badge)`
   margin-left: 8px;
+`;
+
+const CustomButton = styled(Button)`
+  display: block;
 `;

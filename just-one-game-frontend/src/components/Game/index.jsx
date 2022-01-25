@@ -3,10 +3,19 @@ import { Badge, Button } from "react-bootstrap";
 import styled from "styled-components";
 import HowTo from "./HowTo";
 import Content from "./Content";
+import ReplaceNextModal from "./Start/ReplaceNextModal";
 
 export default function Game({ game, clientId, gameHandlers }) {
   const { handleNext } = gameHandlers;
   const [showHowTo, setShowHowTo] = React.useState(false);
+  const [showReplace, setShowReplace] = React.useState(false);
+  const handleNextClick = () => {
+    if (!game.next) {
+      handleNext(game.id);
+    } else {
+      setShowReplace(true);
+    }
+  };
   return (
     <>
       <div>Room Code: {game.id}</div>
@@ -14,7 +23,12 @@ export default function Game({ game, clientId, gameHandlers }) {
         <Content game={game} clientId={clientId} gameHandlers={gameHandlers} />
       </GameContent>
       <ControlsContainer>
-        <Button onClick={() => handleNext(game.id)}>I'll guess next</Button>
+        <Button
+          disabled={game.next?.clientId === clientId}
+          onClick={() => handleNextClick()}
+        >
+          I'll guess next
+        </Button>
         <Button onClick={() => setShowHowTo(true)}>How to play</Button>
       </ControlsContainer>
       <PlayersContainer>
@@ -29,6 +43,15 @@ export default function Game({ game, clientId, gameHandlers }) {
         ))}
       </PlayersContainer>
       <HowTo visible={showHowTo} setVisible={setShowHowTo} />
+      <ReplaceNextModal
+        visible={showReplace}
+        onCancel={() => setShowReplace(false)}
+        onProceed={() => {
+          setShowReplace(false);
+          handleNext(game.id);
+        }}
+        next={game.next?.name}
+      />
     </>
   );
 }
@@ -47,7 +70,9 @@ const PlayersContainer = styled.div`
 `;
 const GameContent = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   height: 250px;
   width: 300px;
   border: 1px solid gray;

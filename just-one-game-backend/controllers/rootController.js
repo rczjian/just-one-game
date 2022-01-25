@@ -87,7 +87,7 @@ const handleAction = ({ res, clients, games }) => {
 
   if (res.action === "next") {
     let payload = {};
-    if (!games[res.data.gameId].next) {
+    if (true) {
       const otherConnections = games[res.data.gameId].players
         .filter((v) => v.clientId !== clientId)
         .map((v) => clients[v.clientId].connection);
@@ -118,7 +118,7 @@ const handleAction = ({ res, clients, games }) => {
         action: "next",
         data: {
           success: false,
-          error: `${games[res.data.gameId].next.name} is in the queue already`,
+          error: `error`,
         },
       };
     }

@@ -20,7 +20,7 @@ export default function useWebSocket({ setConnection, handleMessage }) {
 
     ws.current.onmessage = (message) => {
       const res = JSON.parse(message.data);
-      console.log("response from server", res);
+      console.log("message from server", res);
       handleMessage(res);
     };
   }, []);
