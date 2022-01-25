@@ -1,19 +1,19 @@
 import React from "react";
-import { Button, Form, FormControl, FormLabel } from "react-bootstrap";
+import { Button, FormControl, FormLabel } from "react-bootstrap";
 import styled from "styled-components";
 
 export default function NameForm({ handleSetName }) {
   const [name, setName] = React.useState("");
   return (
-    <CustomForm>
+    <Container>
       <FormLabel>Welcome! Enter your name:</FormLabel>
       <CustomFormControl onChange={(e) => setName(e.target.value)} />
-      <Button onClick={() => handleSetName(name)}>submit</Button>
-    </CustomForm>
+      <Button onClick={() => handleSetName(name)}>Submit</Button>
+    </Container>
   );
 }
 
-const CustomForm = styled(Form)`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 500px;

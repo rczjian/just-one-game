@@ -22,6 +22,7 @@ const handleAction = ({ res, clients, games }) => {
     games[gameId] = {
       id: gameId,
       players: [{ clientId, name: clients[clientId].name }],
+      stage: "init",
     };
 
     const payload = {
@@ -125,6 +126,26 @@ const handleAction = ({ res, clients, games }) => {
 
     const con = clients[clientId].connection;
     con.send(JSON.stringify(payload));
+  }
+
+  if (res.action === "start") {
+    const allConnections = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId].connection
+    );
+
+    games[res.data.gameId].stage = "pick";
+    games[res.data.gameId].guesser = games[res.data.gameId].next;
+    games[res.data.gameId].next = null;
+
+    const broadcast = {
+      action: "broadcast-start",
+      data: {
+        info: `${clients[clientId].name} started the game`,
+        game: games[res.data.gameId],
+      },
+    };
+    allConnections.forEach((con) => con.send(JSON.stringify(broadcast)));
+    console.log(`broadcasted game start for game ${res.data.gameId}`);
   }
 };
 

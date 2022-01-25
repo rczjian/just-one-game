@@ -3,10 +3,12 @@ import { Button } from "react-bootstrap";
 import styled from "styled-components";
 import { CustomBadge } from "..";
 import ReplaceNextModal from "./ReplaceNextModal";
+import StartModal from "./StartModal";
 
 export default function Start({ game, clientId, gameHandlers }) {
-  const { handleNext } = gameHandlers;
+  const { handleNext, handleStart } = gameHandlers;
   const [showReplace, setShowReplace] = React.useState(false);
+  const [showStart, setShowStart] = React.useState(false);
   const handleNextClick = () => {
     if (!game.next) {
       handleNext(game.id);
@@ -30,7 +32,9 @@ export default function Start({ game, clientId, gameHandlers }) {
         >
           I'll guess next
         </Button>
-        <Button disabled={!game.next?.name}>Start!</Button>
+        <Button disabled={!game.next?.name} onClick={() => setShowStart(true)}>
+          Start!
+        </Button>
       </ControlsContainer>
       <ReplaceNextModal
         visible={showReplace}
@@ -38,6 +42,15 @@ export default function Start({ game, clientId, gameHandlers }) {
         onProceed={() => {
           setShowReplace(false);
           handleNext(game.id);
+        }}
+        next={game.next?.name}
+      />
+      <StartModal
+        visible={showStart}
+        onCancel={() => setShowStart(false)}
+        onProceed={() => {
+          setShowStart(false);
+          handleStart(game.id);
         }}
         next={game.next?.name}
       />
