@@ -4,7 +4,7 @@ export default function useWebSocket({ setConnection, handleMessage }) {
   const ws = React.useRef(null);
 
   React.useEffect(() => {
-    ws.current = new WebSocket("ws://localhost:8081");
+    ws.current = new WebSocket("ws://192.168.1.75:8081");
     ws.current.onopen = () => console.log("ws opened");
     ws.current.onclose = () => {
       console.log("ws closed");

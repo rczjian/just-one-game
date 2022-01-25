@@ -63,7 +63,6 @@ export default function useGameState() {
       setGameState((prevState) => {
         return {
           ...prevState,
-          view: "game",
           game: message.data.game,
         };
       });
@@ -75,7 +74,6 @@ export default function useGameState() {
         setGameState((prevState) => {
           return {
             ...prevState,
-            view: "game",
             game: message.data.game,
           };
         });
@@ -89,7 +87,16 @@ export default function useGameState() {
       setGameState((prevState) => {
         return {
           ...prevState,
-          view: "game",
+          game: message.data.game,
+        };
+      });
+      console.log(message.data.info);
+    }
+
+    if (message.action === "broadcast-disconnect") {
+      setGameState((prevState) => {
+        return {
+          ...prevState,
           game: message.data.game,
         };
       });

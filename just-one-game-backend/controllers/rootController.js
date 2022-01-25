@@ -132,6 +132,7 @@ const handleWsClose = ({ clients, games, clientId }) => {
   console.log("=====================================");
   console.log(`connection for clientId ${clientId} closed`);
   if (clientId) {
+    const name = clients[clientId].name;
     delete clients[clientId];
     console.log(`deleted ${clientId} from client list`);
     Object.values(games).forEach((game) => {
@@ -139,11 +140,28 @@ const handleWsClose = ({ clients, games, clientId }) => {
       game.players = game.players.filter((v) => v.clientId !== clientId);
       if (initLength > game.players.length) {
         console.log(`removed ${clientId} from game ${game.id}`);
-        // TODO: broadcast to the rest that someone left
+      }
+      if (game.next?.clientId === clientId) {
+        game.next = null;
       }
       if (game.players.length === 0) {
         delete games[game.id];
         console.log(`closed game ${game.id} due to lack of players`);
+      } else {
+        const remainingConnections = game.players.map(
+          (v) => clients[v.clientId].connection
+        );
+        const broadcast = {
+          action: "broadcast-disconnect",
+          data: {
+            info: `${name} disconnected`,
+            game: game,
+          },
+        };
+        remainingConnections.forEach((con) =>
+          con.send(JSON.stringify(broadcast))
+        );
+        console.log(`broadcasted new game state for game ${game.id}`);
       }
     });
   }
