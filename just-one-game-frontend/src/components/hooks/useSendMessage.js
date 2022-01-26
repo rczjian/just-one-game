@@ -54,5 +54,24 @@ export default function useSendMessage({ clientId, ws }) {
     ws.current.send(JSON.stringify(payload));
   };
 
-  return { handleSetName, handleCreate, handleJoin, handleNext, handleStart };
+  const handlePick = (roomCode, num) => {
+    const payload = {
+      action: "pick",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+        picked: num,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
+  };
+
+  return {
+    handleSetName,
+    handleCreate,
+    handleJoin,
+    handleNext,
+    handleStart,
+    handlePick,
+  };
 }

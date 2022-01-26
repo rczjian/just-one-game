@@ -3,17 +3,18 @@ import { ControlsContainer } from "../Start";
 import styled from "styled-components";
 
 export default function Number({ game, clientId, gameHandlers }) {
+  const { handlePick } = gameHandlers;
   if (clientId === game.guesser.clientId) {
     return (
       <>
         <div>You are guessing!</div>
         <div>Pick a number:</div>
         <ControlsContainer>
-          <Button>1</Button>
-          <Button>2</Button>
-          <Button>3</Button>
-          <Button>4</Button>
-          <Button>5</Button>
+          <Button onClick={() => handlePick(game.id, 0)}>1</Button>
+          <Button onClick={() => handlePick(game.id, 1)}>2</Button>
+          <Button onClick={() => handlePick(game.id, 2)}>3</Button>
+          <Button onClick={() => handlePick(game.id, 3)}>4</Button>
+          <Button onClick={() => handlePick(game.id, 4)}>5</Button>
         </ControlsContainer>
       </>
     );
@@ -26,8 +27,8 @@ export default function Number({ game, clientId, gameHandlers }) {
             : `${game.guesser.name} is picking a number/word...`}
         </Info>
         <ListGroup style={{ textAlign: "center" }}>
-          {game.words.map((v) => (
-            <ListGroupItem variant={game.selected ? "primary" : "info"}>
+          {game.words.map((v, i) => (
+            <ListGroupItem variant={game.selected ? "primary" : "info"} key={i}>
               {v}
             </ListGroupItem>
           ))}
