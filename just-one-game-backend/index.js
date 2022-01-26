@@ -38,8 +38,8 @@ wsServer.on("request", (req) => {
     } while (Object.keys(clients).includes(clientId.toString()));
     console.log("=====================================");
     console.log(`new client! clientId = ${clientId}`);
-    clients[clientId] = { connection: connection };
-    console.log(`current client list: ${Object.keys(clients)}`);
+    clients[clientId] = { clientId, connection };
+    console.log(`current client list: ${Object.values(clients)}`);
 
     const payload = {
       action: "connect",
@@ -54,7 +54,8 @@ wsServer.on("request", (req) => {
     console.log("message received:", res);
     handleAction({ res, clients, games });
     console.log("current server state:");
-    console.log("clients =", Object.entries(clients));
+    process.stdout.write("clients = ");
+    console.dir(Object.values(clients), { depth: 1 });
     process.stdout.write("games = ");
     console.dir(Object.values(games), { depth: 3 });
   });

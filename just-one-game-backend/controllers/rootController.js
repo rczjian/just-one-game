@@ -6,6 +6,23 @@ const cards = JSON.parse(
 );
 
 const hideCard = ({ words, ...v }) => v;
+const broadcastTo = ({ players, game, broadcast }) => {
+  players.forEach((player) => {
+    if (player.clientId === game.guesser?.clientId) {
+      player.connection.send(
+        JSON.stringify({
+          ...broadcast,
+          data: {
+            ...broadcast.data,
+            game: hideCard(broadcast.data.game),
+          },
+        })
+      );
+    } else {
+      player.connection.send(JSON.stringify(broadcast));
+    }
+  });
+};
 
 const handleAction = ({ res, clients, games }) => {
   const clientId = res.clientId;
@@ -64,8 +81,8 @@ const handleAction = ({ res, clients, games }) => {
         },
       };
     } else {
-      const existingConnections = games[res.data.gameId].players.map(
-        (v) => clients[v.clientId].connection
+      const existingPlayers = games[res.data.gameId].players.map(
+        (v) => clients[v.clientId]
       );
 
       games[res.data.gameId].players.push({
@@ -87,7 +104,11 @@ const handleAction = ({ res, clients, games }) => {
           game: games[res.data.gameId],
         },
       };
-      existingConnections.forEach((con) => con.send(JSON.stringify(broadcast)));
+      broadcastTo({
+        players: existingPlayers,
+        game: games[res.data.gameId],
+        broadcast,
+      });
       console.log(`broadcasted new joiner to game ${res.data.gameId}`);
     }
 
@@ -98,9 +119,9 @@ const handleAction = ({ res, clients, games }) => {
   if (res.action === "next") {
     let payload = {};
     if (true) {
-      const otherConnections = games[res.data.gameId].players
+      const otherPlayers = games[res.data.gameId].players
         .filter((v) => v.clientId !== clientId)
-        .map((v) => clients[v.clientId].connection);
+        .map((v) => clients[v.clientId]);
 
       games[res.data.gameId].next = {
         clientId: res.clientId,
@@ -121,7 +142,11 @@ const handleAction = ({ res, clients, games }) => {
           game: games[res.data.gameId],
         },
       };
-      otherConnections.forEach((con) => con.send(JSON.stringify(broadcast)));
+      broadcastTo({
+        players: otherPlayers,
+        game: games[res.data.gameId],
+        broadcast,
+      });
       console.log(`broadcasted next guesser to game ${res.data.gameId}`);
     } else {
       payload = {
@@ -144,30 +169,23 @@ const handleAction = ({ res, clients, games }) => {
     games[res.data.gameId].words =
       cards[Math.floor(Math.random() * cards.length)];
 
-    const guesserConnection =
-      clients[games[res.data.gameId].guesser.clientId].connection;
-    const hinterConnections = games[res.data.gameId].players
-      .filter((v) => v.clientId !== games[res.data.gameId].guesser.clientId)
-      .map((v) => clients[v.clientId].connection);
+    const allPlayers = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId]
+    );
 
-    const guesserPayload = {
-      action: "broadcast-start",
-      data: {
-        info: `${clients[clientId].name} started the game`,
-        game: hideCard(games[res.data.gameId]),
-      },
-    };
-    const hinterBroadcast = {
+    const broadcast = {
       action: "broadcast-start",
       data: {
         info: `${clients[clientId].name} started the game`,
         game: games[res.data.gameId],
       },
     };
-    guesserConnection.send(JSON.stringify(guesserPayload));
-    hinterConnections.forEach((con) =>
-      con.send(JSON.stringify(hinterBroadcast))
-    );
+
+    broadcastTo({
+      players: allPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
     console.log(`broadcasted game start for game ${res.data.gameId}`);
   }
 };
@@ -192,9 +210,7 @@ const handleWsClose = ({ clients, games, clientId }) => {
             game.next = null;
           }
 
-          const remainingConnections = game.players.map(
-            (v) => clients[v.clientId].connection
-          );
+          const remainingPlayers = game.players.map((v) => clients[v.clientId]);
           const broadcast = {
             action: "broadcast-disconnect",
             data: {
@@ -202,9 +218,12 @@ const handleWsClose = ({ clients, games, clientId }) => {
               game: game,
             },
           };
-          remainingConnections.forEach((con) =>
-            con.send(JSON.stringify(broadcast))
-          );
+
+          broadcastTo({
+            players: remainingPlayers,
+            game,
+            broadcast,
+          });
           console.log(`broadcasted new game state for game ${game.id}`);
         }
       }
