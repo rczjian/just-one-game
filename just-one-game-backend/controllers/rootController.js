@@ -165,7 +165,7 @@ const handleAction = ({ res, clients, games }) => {
   if (res.action === "start") {
     games[res.data.gameId].stage = "pick";
     games[res.data.gameId].guesser = games[res.data.gameId].next;
-    games[res.data.gameId].next = null;
+    delete games[res.data.gameId].next;
     games[res.data.gameId].words =
       cards[Math.floor(Math.random() * cards.length)];
 
@@ -188,6 +188,30 @@ const handleAction = ({ res, clients, games }) => {
     });
     console.log(`broadcasted game start for game ${res.data.gameId}`);
   }
+
+  if (res.action === "pick") {
+    games[res.data.gameId].picked = res.data.picked;
+    games[res.data.gameId].stage = "hint";
+
+    const allPlayers = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId]
+    );
+
+    const broadcast = {
+      action: "broadcast-pick",
+      data: {
+        info: `${clients[clientId].name} picked number ${res.data.picked}`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastTo({
+      players: allPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted pick for game ${res.data.gameId}`);
+  }
 };
 
 const handleWsClose = ({ clients, games, clientId }) => {
@@ -207,7 +231,13 @@ const handleWsClose = ({ clients, games, clientId }) => {
           console.log(`closed game ${game.id} due to lack of players`);
         } else {
           if (game.next?.clientId === clientId) {
-            game.next = null;
+            delete game.next;
+          }
+          if (game.guesser?.clientId === clientId) {
+            game.stage = "init";
+            delete game.guesser;
+            delete game.words;
+            delete game.picked;
           }
 
           const remainingPlayers = game.players.map((v) => clients[v.clientId]);

@@ -1,5 +1,5 @@
 import Start from "./Start";
-import Number from "./Number";
+import PickHint from "./PickHint";
 
 export default function Content({ game, clientId, gameHandlers }) {
   return (
@@ -8,7 +8,7 @@ export default function Content({ game, clientId, gameHandlers }) {
         <Start game={game} clientId={clientId} gameHandlers={gameHandlers} />
       )}
       {(game.stage === "pick" || game.stage === "hint") && (
-        <Number game={game} clientId={clientId} gameHandlers={gameHandlers} />
+        <PickHint game={game} clientId={clientId} gameHandlers={gameHandlers} />
       )}
     </>
   );

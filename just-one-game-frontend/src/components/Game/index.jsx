@@ -43,6 +43,8 @@ const GameContent = styled.div`
   width: 300px;
   border: 1px solid gray;
   margin: 4px 0px 8px;
+  padding: 8px;
+  text-align: center;
 `;
 
 const Header = styled.div`

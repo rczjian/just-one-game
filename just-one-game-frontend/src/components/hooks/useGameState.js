@@ -112,6 +112,16 @@ export default function useGameState() {
       });
       console.log(message.data.info);
     }
+
+    if (message.action === "broadcast-pick") {
+      setGameState((prevState) => {
+        return {
+          ...prevState,
+          game: message.data.game,
+        };
+      });
+      console.log(message.data.info);
+    }
   };
 
   return { connection, setConnection, gameState, handleMessage };
