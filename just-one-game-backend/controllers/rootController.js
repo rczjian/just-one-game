@@ -5,6 +5,8 @@ const cards = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "../data/cards.json"))
 );
 
+const hideCard = ({ words, ...v }) => v;
+
 const handleAction = ({ res, clients, games }) => {
   const clientId = res.clientId;
   const con = clients[clientId].connection;
@@ -136,24 +138,36 @@ const handleAction = ({ res, clients, games }) => {
   }
 
   if (res.action === "start") {
-    const allConnections = games[res.data.gameId].players.map(
-      (v) => clients[v.clientId].connection
-    );
-
     games[res.data.gameId].stage = "pick";
     games[res.data.gameId].guesser = games[res.data.gameId].next;
     games[res.data.gameId].next = null;
     games[res.data.gameId].words =
       cards[Math.floor(Math.random() * cards.length)];
 
-    const broadcast = {
+    const guesserConnection =
+      clients[games[res.data.gameId].guesser.clientId].connection;
+    const hinterConnections = games[res.data.gameId].players
+      .filter((v) => v.clientId !== games[res.data.gameId].guesser.clientId)
+      .map((v) => clients[v.clientId].connection);
+
+    const guesserPayload = {
+      action: "broadcast-start",
+      data: {
+        info: `${clients[clientId].name} started the game`,
+        game: hideCard(games[res.data.gameId]),
+      },
+    };
+    const hinterBroadcast = {
       action: "broadcast-start",
       data: {
         info: `${clients[clientId].name} started the game`,
         game: games[res.data.gameId],
       },
     };
-    allConnections.forEach((con) => con.send(JSON.stringify(broadcast)));
+    guesserConnection.send(JSON.stringify(guesserPayload));
+    hinterConnections.forEach((con) =>
+      con.send(JSON.stringify(hinterBroadcast))
+    );
     console.log(`broadcasted game start for game ${res.data.gameId}`);
   }
 };
