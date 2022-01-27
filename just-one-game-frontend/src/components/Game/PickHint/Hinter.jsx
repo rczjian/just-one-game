@@ -3,7 +3,7 @@ import { Button, FormControl, ListGroup, ListGroupItem } from "react-bootstrap";
 import styled from "styled-components";
 import { ControlsContainer } from "../Start";
 
-export default function Hinter({ game, gameHandlers }) {
+export default function Hinter({ game, clientId, gameHandlers }) {
   const { handleHint } = gameHandlers;
   const [hint, setHint] = React.useState("");
   return (
@@ -24,13 +24,40 @@ export default function Hinter({ game, gameHandlers }) {
         ))}
       </ListGroup>
       {game.stage === "hint" ? (
-        <>
-          <Prompt>Input your hint:</Prompt>
-          <ControlsContainer>
-            <Input onChange={(e) => setHint(e.target.value)} />
-            <Button onClick={() => handleHint(game.id, hint)}>Submit</Button>
-          </ControlsContainer>
-        </>
+        game.submitted.includes(clientId) ? (
+          <>
+            <Prompt>
+              Your hint was <BoldItalic>{hint}</BoldItalic>.
+            </Prompt>
+            {game.submitted.length >= game.players.length - 1 ? (
+              <div>
+                Waiting for <BoldItalic>{game.guesser.name}</BoldItalic> to
+                proceed...
+              </div>
+            ) : (
+              <div>
+                Waiting for hint(s) from{" "}
+                {game.players
+                  .filter((v) => v.clientId !== game.guesser.clientId)
+                  .filter((v) => !game.submitted.includes(v.clientId))
+                  .map((v, i) => (
+                    <>
+                      {i > 0 && ", "}
+                      <BoldItalic key={i}>{v.name}</BoldItalic>
+                    </>
+                  ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <Prompt>Input your hint:</Prompt>
+            <ControlsContainer>
+              <Input onChange={(e) => setHint(e.target.value)} />
+              <Button onClick={() => handleHint(game.id, hint)}>Submit</Button>
+            </ControlsContainer>
+          </>
+        )
       ) : null}
     </>
   );
@@ -48,4 +75,9 @@ const Prompt = styled.div`
 
 const Input = styled(FormControl)`
   text-align: center;
+`;
+
+const BoldItalic = styled.span`
+  font-weight: 600;
+  font-style: italic;
 `;

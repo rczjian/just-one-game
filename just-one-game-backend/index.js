@@ -39,7 +39,8 @@ wsServer.on("request", (req) => {
     console.log("=====================================");
     console.log(`new client! clientId = ${clientId}`);
     clients[clientId] = { clientId, connection };
-    console.log(`current client list: ${Object.values(clients)}`);
+    process.stdout.write("current client list = ");
+    console.dir(Object.values(clients).map((v) => v.clientId));
 
     const payload = {
       action: "connect",

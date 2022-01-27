@@ -4,7 +4,7 @@ import { ControlsContainer } from "../Start";
 import styled from "styled-components";
 import ChangeModal from "./ChangeModal";
 
-export default function Guesser({ game, gameHandlers }) {
+export default function Guesser({ game, clientId, gameHandlers }) {
   const { handlePick } = gameHandlers;
   const [showChange, setShowChange] = React.useState(false);
 
@@ -27,12 +27,29 @@ export default function Guesser({ game, gameHandlers }) {
         size="sm"
         variant="outline-primary"
         onClick={() => setShowChange(true)}
+        disabled={game.submitted.length >= game.players.length - 1}
       >
         Change?
       </Button>
       <WaitingContainer>
-        <div>Waiting for the following players to input their hints...</div>
-        <HinterContainer>placeholder</HinterContainer>
+        {game.submitted.length >= game.players.length - 1 ? (
+          <>
+            <div>All players have submitted their hints!</div>
+            <GuessWrapper>
+              <Button onClick={() => console.log("continue")}>Guess</Button>
+            </GuessWrapper>
+          </>
+        ) : (
+          <>
+            <div>Waiting for the following players to input their hints...</div>
+            {game.players
+              .filter((v) => v.clientId !== clientId)
+              .filter((v) => !game.submitted.includes(v.clientId))
+              .map((v, i) => (
+                <HinterContainer key={i}>{v.name}</HinterContainer>
+              ))}
+          </>
+        )}
       </WaitingContainer>
       <ChangeModal
         visible={showChange}
@@ -50,4 +67,8 @@ const WaitingContainer = styled.div`
 const HinterContainer = styled.div`
   font-weight: 600;
   font-style: italic;
+`;
+
+const GuessWrapper = styled.div`
+  margin-top: 4px;
 `;

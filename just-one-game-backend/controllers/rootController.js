@@ -6,6 +6,7 @@ const cards = JSON.parse(
 );
 
 const hideCard = ({ words, ...v }) => v;
+const hideHints = ({ hints, ...v }) => v;
 const broadcastTo = ({ players, game, broadcast }) => {
   players.forEach((player) => {
     if (player.clientId === game.guesser?.clientId) {
@@ -14,12 +15,20 @@ const broadcastTo = ({ players, game, broadcast }) => {
           ...broadcast,
           data: {
             ...broadcast.data,
-            game: hideCard(broadcast.data.game),
+            game: hideHints(hideCard(broadcast.data.game)),
           },
         })
       );
     } else {
-      player.connection.send(JSON.stringify(broadcast));
+      player.connection.send(
+        JSON.stringify({
+          ...broadcast,
+          data: {
+            ...broadcast.data,
+            game: hideHints(broadcast.data.game),
+          },
+        })
+      );
     }
   });
 };
@@ -192,6 +201,8 @@ const handleAction = ({ res, clients, games }) => {
   if (res.action === "pick") {
     games[res.data.gameId].picked = res.data.picked;
     games[res.data.gameId].stage = "hint";
+    games[res.data.gameId].hints = [];
+    games[res.data.gameId].submitted = [];
 
     const allPlayers = games[res.data.gameId].players.map(
       (v) => clients[v.clientId]
@@ -211,6 +222,36 @@ const handleAction = ({ res, clients, games }) => {
       broadcast,
     });
     console.log(`broadcasted pick for game ${res.data.gameId}`);
+  }
+
+  if (res.action === "hint") {
+    games[res.data.gameId].hints = [
+      ...games[res.data.gameId].hints,
+      { clientId, hint: res.data.hint },
+    ];
+    games[res.data.gameId].submitted = [
+      ...games[res.data.gameId].submitted,
+      clientId,
+    ];
+
+    const allPlayers = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId]
+    );
+
+    const broadcast = {
+      action: "broadcast-hint",
+      data: {
+        info: `${clients[clientId].name} submitted his/her hint`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastTo({
+      players: allPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted new hint for game ${res.data.gameId}`);
   }
 };
 
