@@ -14,9 +14,11 @@ export default function CreateJoin({ name, handleCreate, handleJoin }) {
           <Input
             placeholder={"Room code"}
             value={roomCode}
-            onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+            onChange={(e) => setRoomCode(e.target.value)}
           />
-          <Button onClick={() => handleJoin(roomCode)}>Join this room</Button>
+          <Button onClick={() => handleJoin(roomCode.toUpperCase())}>
+            Join this room
+          </Button>
         </div>
       </Grid>
     </>
@@ -37,4 +39,5 @@ const Input = styled(FormControl)`
   display: inline-block;
   margin-right: 8px;
   text-align: center;
+  text-transform: ${(props) => (props.value ? "uppercase" : undefined)};
 `;

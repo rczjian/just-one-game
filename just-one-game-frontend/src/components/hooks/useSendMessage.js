@@ -66,6 +66,18 @@ export default function useSendMessage({ clientId, ws }) {
     ws.current.send(JSON.stringify(payload));
   };
 
+  const handleHint = (roomCode, hint) => {
+    const payload = {
+      action: "hint",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+        hint,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
+  };
+
   return {
     handleSetName,
     handleCreate,
@@ -73,5 +85,6 @@ export default function useSendMessage({ clientId, ws }) {
     handleNext,
     handleStart,
     handlePick,
+    handleHint,
   };
 }

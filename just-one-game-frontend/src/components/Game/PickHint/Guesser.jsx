@@ -1,9 +1,13 @@
+import React from "react";
 import { Button } from "react-bootstrap";
 import { ControlsContainer } from "../Start";
 import styled from "styled-components";
+import ChangeModal from "./ChangeModal";
 
 export default function Guesser({ game, gameHandlers }) {
   const { handlePick } = gameHandlers;
+  const [showChange, setShowChange] = React.useState(false);
+
   return game.stage === "pick" ? (
     <>
       <div>You are guessing!</div>
@@ -19,13 +23,22 @@ export default function Guesser({ game, gameHandlers }) {
   ) : (
     <>
       <div>You picked number {game.picked}</div>
-      <Button size="sm" variant="outline-primary">
+      <Button
+        size="sm"
+        variant="outline-primary"
+        onClick={() => setShowChange(true)}
+      >
         Change?
       </Button>
       <WaitingContainer>
         <div>Waiting for the following players to input their hints...</div>
         <HinterContainer>placeholder</HinterContainer>
       </WaitingContainer>
+      <ChangeModal
+        visible={showChange}
+        setVisible={setShowChange}
+        handlePick={(num) => handlePick(game.id, num)}
+      />
     </>
   );
 }
