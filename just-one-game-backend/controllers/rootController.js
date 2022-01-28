@@ -253,7 +253,7 @@ const handleAction = ({ res, clients, games }) => {
   if (res.action === "hint") {
     games[res.data.gameId].hints = [
       ...games[res.data.gameId].hints,
-      { clientId, hint: res.data.hint },
+      { clientId, name: clients[clientId].name, hint: res.data.hint },
     ];
     games[res.data.gameId].submitted = [
       ...games[res.data.gameId].submitted,

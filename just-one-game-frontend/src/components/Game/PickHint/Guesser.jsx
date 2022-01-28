@@ -36,7 +36,9 @@ export default function Guesser({ game, clientId, gameHandlers }) {
           <>
             <div>All players have submitted their hints!</div>
             <GuessWrapper>
-              <Button onClick={() => handleReview(game.id)}>Guess</Button>
+              <Button onClick={() => handleReview(game.id)}>
+                Proceed to guess
+              </Button>
             </GuessWrapper>
           </>
         ) : (

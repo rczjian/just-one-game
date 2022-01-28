@@ -20,8 +20,8 @@ export default function StartModal({ visible, onCancel, onProceed, hint }) {
           You will not be able to change your hint after submission.
         </div>
         <BoldItalic>
-          Do consider waiting for all your friends to be ready before you lock
-          in your hint.
+          Do consider waiting for all players to be ready before you lock in
+          your hint.
         </BoldItalic>
       </ModalBody>
       <ModalFooter>

@@ -55,4 +55,5 @@ const Header = styled.div`
 
 export const CustomBadge = styled(Badge)`
   margin-left: 8px;
+  vertical-align: text-top;
 `;
