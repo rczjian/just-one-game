@@ -42,6 +42,7 @@ const GameContent = styled.div`
   height: 400px;
   width: 300px;
   border: 1px solid gray;
+  border-radius: 4px;
   margin: 4px 0px 8px;
   padding: 8px;
   text-align: center;

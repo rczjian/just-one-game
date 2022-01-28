@@ -25,7 +25,7 @@ export default function Guesser({ game, clientId, gameHandlers }) {
       <div>You picked number {game.picked}</div>
       <Button
         size="sm"
-        variant="outline-primary"
+        variant="primary"
         onClick={() => setShowChange(true)}
         disabled={game.submitted.length >= game.players.length - 1}
       >
@@ -55,6 +55,8 @@ export default function Guesser({ game, clientId, gameHandlers }) {
         visible={showChange}
         setVisible={setShowChange}
         handlePick={(num) => handlePick(game.id, num)}
+        picked={game.picked}
+        blocked={game.submitted.length > 0}
       />
     </>
   );

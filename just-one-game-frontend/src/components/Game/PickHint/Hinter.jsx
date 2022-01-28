@@ -2,10 +2,12 @@ import React from "react";
 import { Button, FormControl, ListGroup, ListGroupItem } from "react-bootstrap";
 import styled from "styled-components";
 import { ControlsContainer } from "../Start";
+import SubmitModal from "./SubmitModal";
 
 export default function Hinter({ game, clientId, gameHandlers }) {
   const { handleHint } = gameHandlers;
   const [hint, setHint] = React.useState("");
+  const [showSubmit, setShowSubmit] = React.useState(false);
   return (
     <>
       <Info>
@@ -54,11 +56,20 @@ export default function Hinter({ game, clientId, gameHandlers }) {
             <Prompt>Input your hint:</Prompt>
             <ControlsContainer>
               <Input onChange={(e) => setHint(e.target.value)} />
-              <Button onClick={() => handleHint(game.id, hint)}>Submit</Button>
+              <Button onClick={() => setShowSubmit(true)}>Submit</Button>
             </ControlsContainer>
           </>
         )
       ) : null}
+      <SubmitModal
+        visible={showSubmit}
+        onCancel={() => setShowSubmit(false)}
+        onProceed={() => {
+          handleHint(game.id, hint);
+          setShowSubmit(false);
+        }}
+        hint={hint}
+      />
     </>
   );
 }
@@ -77,7 +88,7 @@ const Input = styled(FormControl)`
   text-align: center;
 `;
 
-const BoldItalic = styled.span`
+export const BoldItalic = styled.span`
   font-weight: 600;
   font-style: italic;
 `;
