@@ -78,6 +78,17 @@ export default function useSendMessage({ clientId, ws }) {
     ws.current.send(JSON.stringify(payload));
   };
 
+  const handleReview = (roomCode) => {
+    const payload = {
+      action: "review",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
+  };
+
   return {
     handleSetName,
     handleCreate,
@@ -86,5 +97,6 @@ export default function useSendMessage({ clientId, ws }) {
     handleStart,
     handlePick,
     handleHint,
+    handleReview,
   };
 }

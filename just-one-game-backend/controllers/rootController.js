@@ -33,6 +33,32 @@ const broadcastTo = ({ players, game, broadcast }) => {
   });
 };
 
+const broadcastWithHints = ({ players, game, broadcast }) => {
+  players.forEach((player) => {
+    if (player.clientId === game.guesser?.clientId) {
+      player.connection.send(
+        JSON.stringify({
+          ...broadcast,
+          data: {
+            ...broadcast.data,
+            game: hideHints(hideCard(broadcast.data.game)),
+          },
+        })
+      );
+    } else {
+      player.connection.send(
+        JSON.stringify({
+          ...broadcast,
+          data: {
+            ...broadcast.data,
+            game: broadcast.data.game,
+          },
+        })
+      );
+    }
+  });
+};
+
 const handleAction = ({ res, clients, games }) => {
   const clientId = res.clientId;
   const con = clients[clientId].connection;
@@ -252,6 +278,30 @@ const handleAction = ({ res, clients, games }) => {
       broadcast,
     });
     console.log(`broadcasted new hint for game ${res.data.gameId}`);
+  }
+
+  if (res.action === "review") {
+    games[res.data.gameId].stage = "review";
+    delete games[res.data.gameId].submitted;
+
+    const allPlayers = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId]
+    );
+
+    const broadcast = {
+      action: "broadcast-review",
+      data: {
+        info: `${clients[clientId].name} started the review stage`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastWithHints({
+      players: allPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted review stage for game ${res.data.gameId}`);
   }
 };
 

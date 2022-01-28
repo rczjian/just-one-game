@@ -5,7 +5,7 @@ import styled from "styled-components";
 import ChangeModal from "./ChangeModal";
 
 export default function Guesser({ game, clientId, gameHandlers }) {
-  const { handlePick } = gameHandlers;
+  const { handlePick, handleReview } = gameHandlers;
   const [showChange, setShowChange] = React.useState(false);
 
   return game.stage === "pick" ? (
@@ -36,7 +36,7 @@ export default function Guesser({ game, clientId, gameHandlers }) {
           <>
             <div>All players have submitted their hints!</div>
             <GuessWrapper>
-              <Button onClick={() => console.log("continue")}>Guess</Button>
+              <Button onClick={() => handleReview(game.id)}>Guess</Button>
             </GuessWrapper>
           </>
         ) : (
