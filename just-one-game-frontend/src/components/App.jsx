@@ -10,8 +10,14 @@ import Game from "./Game";
 import styled from "styled-components";
 
 export default function App() {
-  const { connection, setConnection, gameState, handleMessage } =
-    useGameState();
+  const {
+    connection,
+    setConnection,
+    gameState,
+    handleMessage,
+    joinError,
+    setJoinError,
+  } = useGameState();
   const { ws } = useWebSocket({ setConnection, handleMessage });
   const { handleSetName, handleCreate, handleJoin, ...gameHandlers } =
     useSendMessage({
@@ -33,6 +39,8 @@ export default function App() {
             name={gameState.name}
             handleCreate={handleCreate}
             handleJoin={handleJoin}
+            joinError={joinError}
+            setJoinError={setJoinError}
           />
         ) : null}
         {gameState.view === "game" ? (

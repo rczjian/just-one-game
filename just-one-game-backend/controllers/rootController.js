@@ -15,7 +15,7 @@ const broadcastTo = ({ players, game, broadcast }) => {
           ...broadcast,
           data: {
             ...broadcast.data,
-            game: hideHints(hideCard(broadcast.data.game)),
+            game: hideHints(hideCard(game)),
           },
         })
       );
@@ -25,33 +25,7 @@ const broadcastTo = ({ players, game, broadcast }) => {
           ...broadcast,
           data: {
             ...broadcast.data,
-            game: hideHints(broadcast.data.game),
-          },
-        })
-      );
-    }
-  });
-};
-
-const broadcastWithHints = ({ players, game, broadcast }) => {
-  players.forEach((player) => {
-    if (player.clientId === game.guesser?.clientId) {
-      player.connection.send(
-        JSON.stringify({
-          ...broadcast,
-          data: {
-            ...broadcast.data,
-            game: hideHints(hideCard(broadcast.data.game)),
-          },
-        })
-      );
-    } else {
-      player.connection.send(
-        JSON.stringify({
-          ...broadcast,
-          data: {
-            ...broadcast.data,
-            game: broadcast.data.game,
+            game: game.stage === "review" ? game : hideHints(game),
           },
         })
       );
@@ -296,7 +270,7 @@ const handleAction = ({ res, clients, games }) => {
       },
     };
 
-    broadcastWithHints({
+    broadcastTo({
       players: allPlayers,
       game: games[res.data.gameId],
       broadcast,

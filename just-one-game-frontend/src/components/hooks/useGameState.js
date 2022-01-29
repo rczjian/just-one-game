@@ -8,6 +8,7 @@ export default function useGameState() {
   const [gameState, setGameState] = React.useState({
     view: "setName",
   });
+  const [joinError, setJoinError] = React.useState(false);
 
   const handleMessage = (message) => {
     if (message.action === "connect") {
@@ -55,18 +56,9 @@ export default function useGameState() {
         });
         console.log(`joined game id ${message.data.game.id}`);
       } else {
+        setJoinError(true);
         console.log(`error: ${message.data.error}`);
       }
-    }
-
-    if (message.action === "broadcast-join") {
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          game: message.data.game,
-        };
-      });
-      console.log(message.data.info);
     }
 
     if (message.action === "next") {
@@ -83,57 +75,15 @@ export default function useGameState() {
       }
     }
 
-    if (message.action === "broadcast-next") {
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          game: message.data.game,
-        };
-      });
-      console.log(message.data.info);
-    }
-
-    if (message.action === "broadcast-disconnect") {
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          game: message.data.game,
-        };
-      });
-      console.log(message.data.info);
-    }
-
-    if (message.action === "broadcast-start") {
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          game: message.data.game,
-        };
-      });
-      console.log(message.data.info);
-    }
-
-    if (message.action === "broadcast-pick") {
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          game: message.data.game,
-        };
-      });
-      console.log(message.data.info);
-    }
-
-    if (message.action === "broadcast-hint") {
-      setGameState((prevState) => {
-        return {
-          ...prevState,
-          game: message.data.game,
-        };
-      });
-      console.log(message.data.info);
-    }
-
-    if (message.action === "broadcast-review") {
+    if (
+      message.action === "broadcast-join" ||
+      message.action === "broadcast-next" ||
+      message.action === "broadcast-disconnect" ||
+      message.action === "broadcast-start" ||
+      message.action === "broadcast-pick" ||
+      message.action === "broadcast-hint" ||
+      message.action === "broadcast-review"
+    ) {
       setGameState((prevState) => {
         return {
           ...prevState,
@@ -144,5 +94,12 @@ export default function useGameState() {
     }
   };
 
-  return { connection, setConnection, gameState, handleMessage };
+  return {
+    connection,
+    setConnection,
+    gameState,
+    handleMessage,
+    joinError,
+    setJoinError,
+  };
 }

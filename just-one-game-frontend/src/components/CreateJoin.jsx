@@ -1,8 +1,15 @@
 import React from "react";
 import { Button, FormControl } from "react-bootstrap";
 import styled from "styled-components";
+import { CustomAlert } from "./Game/ReviewGuess/Hinter";
 
-export default function CreateJoin({ name, handleCreate, handleJoin }) {
+export default function CreateJoin({
+  name,
+  handleCreate,
+  handleJoin,
+  joinError,
+  setJoinError,
+}) {
   const [roomCode, setRoomCode] = React.useState("");
   return (
     <>
@@ -14,11 +21,19 @@ export default function CreateJoin({ name, handleCreate, handleJoin }) {
           <Input
             placeholder={"Room code"}
             value={roomCode}
-            onChange={(e) => setRoomCode(e.target.value)}
+            onChange={(e) => {
+              setRoomCode(e.target.value);
+              setJoinError(false);
+            }}
           />
           <Button onClick={() => handleJoin(roomCode.toUpperCase())}>
             Join this room
           </Button>
+          {joinError && (
+            <CustomAlert variant="danger" style={{ marginTop: "8px" }}>
+              This room code doesn't exist!
+            </CustomAlert>
+          )}
         </div>
       </Grid>
     </>

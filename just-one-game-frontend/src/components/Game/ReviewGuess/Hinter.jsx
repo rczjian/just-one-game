@@ -1,4 +1,5 @@
-import { Table, Button } from "react-bootstrap";
+import React from "react";
+import { Alert, Table, Button } from "react-bootstrap";
 import { CustomBadge } from "../../Game";
 import styled from "styled-components";
 
@@ -6,32 +7,47 @@ export default function Hinter({ game, clientId, gameHandlers }) {
   return (
     <>
       <div>Compare your hints!</div>
-      <CustomTable responsive striped borderless hover>
-        <tbody>
-          {game.hints.map((v) => (
-            <tr>
-              <td>
-                {v.name}
-                {v.clientId === clientId && (
-                  <CustomBadge bg="secondary">YOU!</CustomBadge>
-                )}
-              </td>
-              <td>
-                <Text strikethrough={v.cancelled}>{v.hint}</Text>
-                {v.clientId === clientId && (
-                  <BadgeButton onClick={() => console.log("cancel?")}>
-                    {v.cancelled ? "Restore" : "Cancel"}
-                  </BadgeButton>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </CustomTable>
-      <Button>Confirm</Button>
+      <div>
+        <CustomAlert variant="warning">
+          Cancel your clue if it is identical to or related to (e.g. plurals,
+          gender differences, homonyms) the other clues.
+        </CustomAlert>
+        <CustomTable responsive striped borderless hover>
+          <tbody>
+            {game.hints.map((v, i) => (
+              <React.Fragment key={i}>
+                <tr>
+                  <td>
+                    {v.name}
+                    {v.clientId === clientId && (
+                      <CustomBadge bg="secondary">YOU!</CustomBadge>
+                    )}
+                  </td>
+                  <td>
+                    <Text strikethrough={v.cancelled}>{v.hint}</Text>
+                    {v.clientId === clientId && (
+                      <BadgeButton onClick={() => console.log("cancel?")}>
+                        {v.cancelled ? "Restore" : "Cancel"}
+                      </BadgeButton>
+                    )}
+                  </td>
+                </tr>
+              </React.Fragment>
+            ))}
+          </tbody>
+        </CustomTable>
+      </div>
+      <Button size="sm">Confirm</Button>
     </>
   );
 }
+
+export const CustomAlert = styled(Alert)`
+  font-size: small;
+  padding: 0.25rem 0.5rem;
+  margin: 4px 0px 0px;
+  text-align: left;
+`;
 
 const CustomTable = styled(Table)`
   margin: 8px 0px;
@@ -39,9 +55,27 @@ const CustomTable = styled(Table)`
     min-width: 100px;
     vertical-align: middle;
   }
-  th:last-child,
+  tr:nth-child(even) > td {
+    background-color: #dddddd;
+  }
   td:last-child {
     border-left: 1px solid #dee2e6;
+  }
+  tr:first-child {
+    td:first-child {
+      border-top-left-radius: 4px;
+    }
+    td:last-child {
+      border-top-right-radius: 4px;
+    }
+  }
+  tr:last-child {
+    td:first-child {
+      border-bottom-left-radius: 4px;
+    }
+    td:last-child {
+      border-bottom-right-radius: 4px;
+    }
   }
 `;
 
