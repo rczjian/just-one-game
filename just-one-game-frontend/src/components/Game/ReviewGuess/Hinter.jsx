@@ -5,12 +5,12 @@ import styled from "styled-components";
 
 export default function Hinter({ game, clientId, gameHandlers }) {
   const { handleCancel, handleRestore, handleAccept } = gameHandlers;
-  return (
+  return game.stage === "review" ? (
     <>
       <div>Compare your hints!</div>
       <div>
         <CustomAlert variant="warning">
-          Cancel your clue if it is identical to or related to (e.g. plurals,
+          Cancel your clue if it is identical to or similar to (e.g. plurals,
           gender differences, homonyms) the other clues.
         </CustomAlert>
         <CustomTable responsive striped borderless hover>
@@ -52,6 +52,8 @@ export default function Hinter({ game, clientId, gameHandlers }) {
         Accept
       </Button>
     </>
+  ) : (
+    <div>guesser is guessing</div>
   );
 }
 
@@ -62,7 +64,7 @@ export const CustomAlert = styled(Alert)`
   text-align: left;
 `;
 
-const CustomTable = styled(Table)`
+export const CustomTable = styled(Table)`
   margin: 8px 0px;
   td {
     min-width: 100px;

@@ -7,6 +7,14 @@ const cards = JSON.parse(
 
 const hideCard = ({ words, ...v }) => v;
 const hideHints = ({ hints, ...v }) => v;
+const filterHints = ({ hints, ...v }) => {
+  return {
+    hints: hints.map((e) => {
+      return { ...e, hint: e.cancelled ? `[REDACTED]` : e.hint };
+    }),
+    ...v,
+  };
+};
 const broadcastTo = ({ players, game, broadcast }) => {
   players.forEach((player) => {
     if (player.clientId === game.guesser?.clientId) {
@@ -15,7 +23,10 @@ const broadcastTo = ({ players, game, broadcast }) => {
           ...broadcast,
           data: {
             ...broadcast.data,
-            game: hideHints(hideCard(game)),
+            game:
+              game.stage === "guess"
+                ? filterHints(hideCard(game))
+                : hideHints(hideCard(game)),
           },
         })
       );
@@ -25,7 +36,10 @@ const broadcastTo = ({ players, game, broadcast }) => {
           ...broadcast,
           data: {
             ...broadcast.data,
-            game: game.stage === "review" ? game : hideHints(game),
+            game:
+              game.stage === "review" || game.stage === "guess"
+                ? game
+                : hideHints(game),
           },
         })
       );
@@ -337,24 +351,49 @@ const handleAction = ({ res, clients, games }) => {
   if (res.action === "accept") {
     games[res.data.gameId].accepted.push(clientId);
 
-    const hintPlayers = games[res.data.gameId].players
-      .filter((v) => v.clientId !== games[res.data.gameId].guesser.clientId)
-      .map((v) => clients[v.clientId]);
+    if (
+      games[res.data.gameId].accepted.length >=
+      games[res.data.gameId].players.length - 1
+    ) {
+      games[res.data.gameId].stage = "guess";
+      delete games[res.data.gameId].accepted;
+      const allPlayers = games[res.data.gameId].players.map(
+        (v) => clients[v.clientId]
+      );
+      const broadcast = {
+        action: "broadcast-accept",
+        data: {
+          info: `All players have accepted the given hints, proceeding to guess stage`,
+          game: games[res.data.gameId],
+        },
+      };
 
-    const broadcast = {
-      action: "broadcast-accept",
-      data: {
-        info: `${clients[clientId].name} accepted the given hints`,
+      broadcastTo({
+        players: allPlayers,
         game: games[res.data.gameId],
-      },
-    };
+        broadcast,
+      });
+      console.log(`broadcasted guess stage for game ${res.data.gameId}`);
+    } else {
+      const hintPlayers = games[res.data.gameId].players
+        .filter((v) => v.clientId !== games[res.data.gameId].guesser.clientId)
+        .map((v) => clients[v.clientId]);
 
-    broadcastTo({
-      players: hintPlayers,
-      game: games[res.data.gameId],
-      broadcast,
-    });
-    console.log(`broadcasted hint acceptance for game ${res.data.gameId}`);
+      const broadcast = {
+        action: "broadcast-accept",
+        data: {
+          info: `${clients[clientId].name} accepted the given hints`,
+          game: games[res.data.gameId],
+        },
+      };
+
+      broadcastTo({
+        players: hintPlayers,
+        game: games[res.data.gameId],
+        broadcast,
+      });
+      console.log(`broadcasted hint acceptance for game ${res.data.gameId}`);
+    }
   }
 };
 

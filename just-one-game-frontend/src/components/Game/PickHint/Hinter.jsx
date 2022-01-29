@@ -79,12 +79,12 @@ const Info = styled.div`
   margin-bottom: 8px;
 `;
 
-const Prompt = styled.div`
+export const Prompt = styled.div`
   text-align: center;
   margin-top: 16px;
 `;
 
-const Input = styled(FormControl)`
+export const Input = styled(FormControl)`
   text-align: center;
 `;
 
