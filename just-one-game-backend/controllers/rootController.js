@@ -241,7 +241,7 @@ const handleAction = ({ res, clients, games }) => {
     const broadcast = {
       action: "broadcast-hint",
       data: {
-        info: `${clients[clientId].name} submitted his/her hint`,
+        info: `${clients[clientId].name} submitted their hint`,
         game: games[res.data.gameId],
       },
     };
@@ -256,6 +256,7 @@ const handleAction = ({ res, clients, games }) => {
 
   if (res.action === "review") {
     games[res.data.gameId].stage = "review";
+    games[res.data.gameId].accepted = [];
     delete games[res.data.gameId].submitted;
 
     const allPlayers = games[res.data.gameId].players.map(
@@ -276,6 +277,84 @@ const handleAction = ({ res, clients, games }) => {
       broadcast,
     });
     console.log(`broadcasted review stage for game ${res.data.gameId}`);
+  }
+
+  if (res.action === "cancel") {
+    const hintIdx = games[res.data.gameId].hints.findIndex(
+      (v) => v.clientId === clientId
+    );
+    const hint = games[res.data.gameId].hints[hintIdx];
+    games[res.data.gameId].hints[hintIdx] = { ...hint, cancelled: true };
+    games[res.data.gameId].accepted = [];
+
+    const hintPlayers = games[res.data.gameId].players
+      .filter((v) => v.clientId !== games[res.data.gameId].guesser.clientId)
+      .map((v) => clients[v.clientId]);
+
+    const broadcast = {
+      action: "broadcast-cancel",
+      data: {
+        info: `${clients[clientId].name} cancelled their hint`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastTo({
+      players: hintPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted hint cancellation for game ${res.data.gameId}`);
+  }
+
+  if (res.action === "restore") {
+    const hintIdx = games[res.data.gameId].hints.findIndex(
+      (v) => v.clientId === clientId
+    );
+    games[res.data.gameId].hints[hintIdx].cancelled = false;
+    games[res.data.gameId].accepted = [];
+
+    const hintPlayers = games[res.data.gameId].players
+      .filter((v) => v.clientId !== games[res.data.gameId].guesser.clientId)
+      .map((v) => clients[v.clientId]);
+
+    const broadcast = {
+      action: "broadcast-restore",
+      data: {
+        info: `${clients[clientId].name} restored their hint`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastTo({
+      players: hintPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted hint restoration for game ${res.data.gameId}`);
+  }
+
+  if (res.action === "accept") {
+    games[res.data.gameId].accepted.push(clientId);
+
+    const hintPlayers = games[res.data.gameId].players
+      .filter((v) => v.clientId !== games[res.data.gameId].guesser.clientId)
+      .map((v) => clients[v.clientId]);
+
+    const broadcast = {
+      action: "broadcast-accept",
+      data: {
+        info: `${clients[clientId].name} accepted the given hints`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastTo({
+      players: hintPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted hint acceptance for game ${res.data.gameId}`);
   }
 };
 

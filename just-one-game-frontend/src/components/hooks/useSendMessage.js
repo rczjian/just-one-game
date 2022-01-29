@@ -89,6 +89,39 @@ export default function useSendMessage({ clientId, ws }) {
     ws.current.send(JSON.stringify(payload));
   };
 
+  const handleCancel = (roomCode) => {
+    const payload = {
+      action: "cancel",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
+  };
+
+  const handleRestore = (roomCode) => {
+    const payload = {
+      action: "restore",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
+  };
+
+  const handleAccept = (roomCode) => {
+    const payload = {
+      action: "accept",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
+  };
+
   return {
     handleSetName,
     handleCreate,
@@ -98,5 +131,8 @@ export default function useSendMessage({ clientId, ws }) {
     handlePick,
     handleHint,
     handleReview,
+    handleCancel,
+    handleRestore,
+    handleAccept,
   };
 }

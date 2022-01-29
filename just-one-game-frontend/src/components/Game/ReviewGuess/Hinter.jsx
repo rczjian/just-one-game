@@ -4,6 +4,7 @@ import { CustomBadge } from "../../Game";
 import styled from "styled-components";
 
 export default function Hinter({ game, clientId, gameHandlers }) {
+  const { handleCancel, handleRestore, handleAccept } = gameHandlers;
   return (
     <>
       <div>Compare your hints!</div>
@@ -26,7 +27,13 @@ export default function Hinter({ game, clientId, gameHandlers }) {
                   <td>
                     <Text strikethrough={v.cancelled}>{v.hint}</Text>
                     {v.clientId === clientId && (
-                      <BadgeButton onClick={() => console.log("cancel?")}>
+                      <BadgeButton
+                        onClick={
+                          v.cancelled
+                            ? () => handleRestore(game.id)
+                            : () => handleCancel(game.id)
+                        }
+                      >
                         {v.cancelled ? "Restore" : "Cancel"}
                       </BadgeButton>
                     )}
@@ -37,7 +44,13 @@ export default function Hinter({ game, clientId, gameHandlers }) {
           </tbody>
         </CustomTable>
       </div>
-      <Button size="sm">Confirm</Button>
+      <Button
+        size="sm"
+        onClick={() => handleAccept(game.id)}
+        disabled={game.accepted.includes(clientId)}
+      >
+        Accept
+      </Button>
     </>
   );
 }
@@ -90,5 +103,5 @@ const BadgeButton = styled(Button)`
 const Text = styled.span`
   word-break: break-word;
   text-decoration: ${(props) =>
-    props.strikethrough ? "line-through" : "none"};
+    props.strikethrough ? "2px line-through" : "none"};
 `;
