@@ -8,6 +8,7 @@ import RevealModal from "./RevealModal";
 import EndModal from "./EndModal";
 
 export default function Guesser({ game, clientId, gameHandlers }) {
+  const { handleAnswer, handleReveal, handleEnd } = gameHandlers;
   const [answer, setAnswer] = React.useState("");
   const [showAnswer, setShowAnswer] = React.useState(false);
   const [showReveal, setShowReveal] = React.useState(false);
@@ -55,6 +56,7 @@ export default function Guesser({ game, clientId, gameHandlers }) {
         visible={showAnswer}
         onCancel={() => setShowAnswer(false)}
         onProceed={() => {
+          handleAnswer(game.id, answer);
           setShowAnswer(false);
         }}
         answer={answer}
@@ -63,6 +65,7 @@ export default function Guesser({ game, clientId, gameHandlers }) {
         visible={showReveal}
         onCancel={() => setShowReveal(false)}
         onProceed={() => {
+          handleReveal(game.id);
           setShowReveal(false);
         }}
       />
@@ -70,6 +73,7 @@ export default function Guesser({ game, clientId, gameHandlers }) {
         visible={showEnd}
         onCancel={() => setShowEnd(false)}
         onProceed={() => {
+          handleEnd(game.id);
           setShowEnd(false);
         }}
       />

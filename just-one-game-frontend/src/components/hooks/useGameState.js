@@ -85,7 +85,10 @@ export default function useGameState() {
       message.action === "broadcast-review" ||
       message.action === "broadcast-cancel" ||
       message.action === "broadcast-restore" ||
-      message.action === "broadcast-accept"
+      message.action === "broadcast-accept" ||
+      message.action === "broadcast-guess" ||
+      message.action === "broadcast-reveal" ||
+      message.action === "broadcast-end"
     ) {
       setGameState((prevState) => {
         return {

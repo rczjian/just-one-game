@@ -24,8 +24,12 @@ const broadcastTo = ({ players, game, broadcast }) => {
           data: {
             ...broadcast.data,
             game:
-              game.stage === "guess"
-                ? filterHints(hideCard(game))
+              game.stage === "end"
+                ? game
+                : game.stage === "guess"
+                ? game.reveal
+                  ? hideCard(game)
+                  : filterHints(hideCard(game))
                 : hideHints(hideCard(game)),
           },
         })
@@ -37,7 +41,9 @@ const broadcastTo = ({ players, game, broadcast }) => {
           data: {
             ...broadcast.data,
             game:
-              game.stage === "review" || game.stage === "guess"
+              game.stage === "review" ||
+              game.stage === "guess" ||
+              game.stage === "end"
                 ? game
                 : hideHints(game),
           },
@@ -356,6 +362,7 @@ const handleAction = ({ res, clients, games }) => {
       games[res.data.gameId].players.length - 1
     ) {
       games[res.data.gameId].stage = "guess";
+      games[res.data.gameId].guesses = [];
       delete games[res.data.gameId].accepted;
       const allPlayers = games[res.data.gameId].players.map(
         (v) => clients[v.clientId]
@@ -394,6 +401,91 @@ const handleAction = ({ res, clients, games }) => {
       });
       console.log(`broadcasted hint acceptance for game ${res.data.gameId}`);
     }
+  }
+
+  if (res.action === "answer") {
+    games[res.data.gameId].guesses.push(res.data.answer);
+
+    const allPlayers = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId]
+    );
+    let broadcast;
+
+    if (
+      res.data.answer.toLowerCase() ===
+      games[res.data.gameId].words[
+        games[res.data.gameId].picked - 1
+      ].toLowerCase()
+    ) {
+      games[res.data.gameId].stage = "end";
+      broadcast = {
+        action: "broadcast-end",
+        data: {
+          info: `${clients[clientId].name} guessed the right word!`,
+          game: games[res.data.gameId],
+        },
+      };
+      console.log(`broadcasted end stage for game ${res.data.gameId}`);
+    } else {
+      broadcast = {
+        action: "broadcast-guess",
+        data: {
+          info: `${clients[clientId].name} guessed incorrectly`,
+          game: games[res.data.gameId],
+        },
+      };
+      console.log(`broadcasted incorrect guess for game ${res.data.gameId}`);
+    }
+
+    broadcastTo({
+      players: allPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+  }
+
+  if (res.action === "reveal") {
+    games[res.data.gameId].reveal = true;
+
+    const allPlayers = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId]
+    );
+    const broadcast = {
+      action: "broadcast-reveal",
+      data: {
+        info: `${clients[clientId].name} revealed all cancelled hints`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastTo({
+      players: allPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted hint reveal for game ${res.data.gameId}`);
+  }
+
+  if (res.action === "end") {
+    games[res.data.gameId].stage = "end";
+
+    const allPlayers = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId]
+    );
+    const broadcast = {
+      action: "broadcast-end",
+      data: {
+        info: `${clients[clientId].name} ended the round`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastTo({
+      players: allPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted end stage for game ${res.data.gameId}`);
   }
 };
 
