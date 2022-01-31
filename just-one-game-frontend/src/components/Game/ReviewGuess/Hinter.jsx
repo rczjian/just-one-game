@@ -53,7 +53,30 @@ export default function Hinter({ game, clientId, gameHandlers }) {
       </Button>
     </>
   ) : (
-    <div>guesser is guessing</div>
+    <>
+      <div>{game.guesser.name} is guessing based on the following hints:</div>
+      <div>
+        <CustomTable responsive striped borderless hover>
+          <tbody>
+            {game.hints.map((v, i) => (
+              <React.Fragment key={i}>
+                <tr>
+                  <td>
+                    {v.name}
+                    {v.clientId === clientId && (
+                      <CustomBadge bg="secondary">YOU!</CustomBadge>
+                    )}
+                  </td>
+                  <td>
+                    <Text strikethrough={v.cancelled}>{v.hint}</Text>
+                  </td>
+                </tr>
+              </React.Fragment>
+            ))}
+          </tbody>
+        </CustomTable>
+      </div>
+    </>
   );
 }
 

@@ -6,26 +6,20 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 import ModalHeader from "react-bootstrap/esm/ModalHeader";
+import { BoldItalic } from "../PickHint/Hinter";
 
-export default function ReplaceNextModal({
-  visible,
-  onCancel,
-  onProceed,
-  next,
-}) {
+export default function RevealModal({ visible, onCancel, onProceed }) {
   return (
     <Modal show={visible}>
       <ModalHeader>
-        <ModalTitle>Replace {next}?</ModalTitle>
+        <ModalTitle>Reveal hints?</ModalTitle>
       </ModalHeader>
-      <ModalBody>
-        Are you sure? You will replace {next} as the next guesser.
-      </ModalBody>
+      <ModalBody>This will reveal all cancelled clues.</ModalBody>
       <ModalFooter>
         <Button variant="secondary" onClick={() => onCancel()}>
           Cancel
         </Button>
-        <Button onClick={() => onProceed()}>Yes</Button>
+        <Button onClick={() => onProceed()}>Reveal</Button>
       </ModalFooter>
     </Modal>
   );

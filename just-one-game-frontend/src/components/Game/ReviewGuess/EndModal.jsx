@@ -7,25 +7,18 @@ import {
 } from "react-bootstrap";
 import ModalHeader from "react-bootstrap/esm/ModalHeader";
 
-export default function ReplaceNextModal({
-  visible,
-  onCancel,
-  onProceed,
-  next,
-}) {
+export default function EndModal({ visible, onCancel, onProceed }) {
   return (
     <Modal show={visible}>
       <ModalHeader>
-        <ModalTitle>Replace {next}?</ModalTitle>
+        <ModalTitle>End round?</ModalTitle>
       </ModalHeader>
-      <ModalBody>
-        Are you sure? You will replace {next} as the next guesser.
-      </ModalBody>
+      <ModalBody>This will end the round, with no more retries.</ModalBody>
       <ModalFooter>
         <Button variant="secondary" onClick={() => onCancel()}>
           Cancel
         </Button>
-        <Button onClick={() => onProceed()}>Yes</Button>
+        <Button onClick={() => onProceed()}>End round</Button>
       </ModalFooter>
     </Modal>
   );
