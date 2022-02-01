@@ -6,7 +6,7 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 import ModalHeader from "react-bootstrap/esm/ModalHeader";
-import { BoldItalic } from "../PickHint/Hinter";
+import { BoldItalic } from "../../common-components";
 
 export default function AnswerModal({ visible, onCancel, onProceed, answer }) {
   return (

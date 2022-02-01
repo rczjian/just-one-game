@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import styled from "styled-components";
-import { CustomBadge } from "..";
+import { ControlsContainer, CustomBadge } from "../../common-components";
 import ReplaceNextModal from "./ReplaceNextModal";
 import StartModal from "./StartModal";
 
@@ -57,8 +56,3 @@ export default function Start({ game, clientId, gameHandlers }) {
     </>
   );
 }
-export const ControlsContainer = styled.div`
-  display: flex;
-  gap: 8px;
-  margin: 8px 8px 0px;
-`;

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, FormControl } from "react-bootstrap";
 import styled from "styled-components";
-import { CustomAlert } from "./Game/ReviewGuess/Hinter";
+import { CustomAlert } from "./common-components";
 
 export default function CreateJoin({
   name,

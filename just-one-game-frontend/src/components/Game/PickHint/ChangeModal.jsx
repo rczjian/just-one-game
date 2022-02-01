@@ -6,7 +6,7 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 import ModalHeader from "react-bootstrap/esm/ModalHeader";
-import { ControlsContainer } from "../Start";
+import { ControlsContainer } from "../../common-components";
 import styled from "styled-components";
 
 export default function ChangeModal({

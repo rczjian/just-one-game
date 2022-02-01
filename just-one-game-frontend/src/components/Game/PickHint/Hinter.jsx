@@ -1,7 +1,12 @@
 import React from "react";
-import { Button, FormControl, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, ListGroup, ListGroupItem } from "react-bootstrap";
+import {
+  Prompt,
+  Input,
+  BoldItalic,
+  ControlsContainer,
+} from "../../common-components";
 import styled from "styled-components";
-import { ControlsContainer } from "../Start";
 import SubmitModal from "./SubmitModal";
 
 export default function Hinter({ game, clientId, gameHandlers }) {
@@ -77,18 +82,4 @@ export default function Hinter({ game, clientId, gameHandlers }) {
 const Info = styled.div`
   text-align: center;
   margin-bottom: 8px;
-`;
-
-export const Prompt = styled.div`
-  text-align: center;
-  margin-top: 16px;
-`;
-
-export const Input = styled(FormControl)`
-  text-align: center;
-`;
-
-export const BoldItalic = styled.span`
-  font-weight: 600;
-  font-style: italic;
 `;

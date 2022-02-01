@@ -1,12 +1,16 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { CustomTable } from "./Hinter";
-import { ControlsContainer } from "../Start";
-import { Prompt, Input, BoldItalic } from "../PickHint/Hinter";
+import {
+  Prompt,
+  Input,
+  BoldItalic,
+  ControlsContainer,
+  CustomTable,
+  CustomAlert,
+} from "../../common-components";
 import AnswerModal from "./AnswerModal";
 import RevealModal from "./RevealModal";
 import EndModal from "./EndModal";
-import { CustomAlert } from "./Hinter";
 
 export default function Guesser({ game, clientId, gameHandlers }) {
   const { handleAnswer, handleReveal, handleEnd } = gameHandlers;

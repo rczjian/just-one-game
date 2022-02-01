@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { ControlsContainer } from "../Start";
+import { ControlsContainer } from "../../common-components";
 import styled from "styled-components";
 import ChangeModal from "./ChangeModal";
 

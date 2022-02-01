@@ -6,7 +6,6 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 import ModalHeader from "react-bootstrap/esm/ModalHeader";
-import { BoldItalic } from "../PickHint/Hinter";
 
 export default function RevealModal({ visible, onCancel, onProceed }) {
   return (

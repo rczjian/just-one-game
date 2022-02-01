@@ -1,6 +1,7 @@
 import React from "react";
-import { Badge, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import styled from "styled-components";
+import { CustomBadge } from "../common-components";
 import HowTo from "./HowTo";
 import Content from "./Content";
 
@@ -51,9 +52,4 @@ const GameContent = styled.div`
 const Header = styled.div`
   font-weight: 600;
   text-decoration: underline;
-`;
-
-export const CustomBadge = styled(Badge)`
-  margin-left: 8px;
-  vertical-align: text-top;
 `;
