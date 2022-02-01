@@ -418,6 +418,7 @@ const handleAction = ({ res, clients, games }) => {
       ].toLowerCase()
     ) {
       games[res.data.gameId].stage = "end";
+      games[res.data.gameId].success = true;
       broadcast = {
         action: "broadcast-end",
         data: {
@@ -468,6 +469,7 @@ const handleAction = ({ res, clients, games }) => {
 
   if (res.action === "end") {
     games[res.data.gameId].stage = "end";
+    games[res.data.gameId].success = false;
 
     const allPlayers = games[res.data.gameId].players.map(
       (v) => clients[v.clientId]

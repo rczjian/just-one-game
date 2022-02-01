@@ -1,10 +1,11 @@
 import React from "react";
-import { Button, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, ListGroupItem } from "react-bootstrap";
 import {
   Prompt,
   Input,
   BoldItalic,
   ControlsContainer,
+  CustomListGroup,
 } from "../../common-components";
 import styled from "styled-components";
 import SubmitModal from "./SubmitModal";
@@ -20,7 +21,7 @@ export default function Hinter({ game, clientId, gameHandlers }) {
           ? `${game.guesser.name}'s word is highlighted below`
           : `${game.guesser.name} is picking a number/word...`}
       </Info>
-      <ListGroup style={{ textAlign: "center" }}>
+      <CustomListGroup>
         {game.words.map((v, i) => (
           <ListGroupItem
             variant={game.picked === i + 1 ? "warning" : "primary"}
@@ -29,7 +30,7 @@ export default function Hinter({ game, clientId, gameHandlers }) {
             {v}
           </ListGroupItem>
         ))}
-      </ListGroup>
+      </CustomListGroup>
       {game.stage === "hint" ? (
         game.submitted.includes(clientId) ? (
           <>

@@ -1,4 +1,4 @@
-import { Alert, Badge, FormControl, Table } from "react-bootstrap";
+import { Alert, Badge, FormControl, ListGroup, Table } from "react-bootstrap";
 import styled from "styled-components";
 
 export const Prompt = styled.div`
@@ -38,6 +38,7 @@ export const CustomTable = styled(Table)`
   td {
     min-width: 100px;
     vertical-align: middle;
+    padding: 0.25rem 0.5rem;
   }
   tr:nth-child(even) > td {
     background-color: #dddddd;
@@ -60,5 +61,12 @@ export const CustomTable = styled(Table)`
     td:last-child {
       border-bottom-right-radius: 4px;
     }
+  }
+`;
+
+export const CustomListGroup = styled(ListGroup)`
+  text-align: center;
+  > div {
+    padding: 0.25rem 1rem;
   }
 `;
