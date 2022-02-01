@@ -2,6 +2,7 @@ import React from "react";
 import { Alert, Table, Button } from "react-bootstrap";
 import { CustomBadge } from "../../Game";
 import styled from "styled-components";
+import { BoldItalic } from "../PickHint/Hinter";
 
 export default function Hinter({ game, clientId, gameHandlers }) {
   const { handleCancel, handleRestore, handleAccept } = gameHandlers;
@@ -54,7 +55,14 @@ export default function Hinter({ game, clientId, gameHandlers }) {
     </>
   ) : (
     <>
-      <div>{game.guesser.name} is guessing based on the following hints:</div>
+      <div>
+        {game.guesser.name} is trying to guess the word{" "}
+        <BoldItalic>{game.words[game.picked - 1]}</BoldItalic> based on these
+        hints:
+      </div>
+      {game.reveal && (
+        <CustomAlert variant="warning">Cancelled hints revealed!</CustomAlert>
+      )}
       <div>
         <CustomTable responsive striped borderless hover>
           <tbody>
@@ -68,7 +76,9 @@ export default function Hinter({ game, clientId, gameHandlers }) {
                     )}
                   </td>
                   <td>
-                    <Text strikethrough={v.cancelled}>{v.hint}</Text>
+                    <Text strikethrough={v.cancelled && !game.reveal}>
+                      {v.hint}
+                    </Text>
                   </td>
                 </tr>
               </React.Fragment>
@@ -76,6 +86,18 @@ export default function Hinter({ game, clientId, gameHandlers }) {
           </tbody>
         </CustomTable>
       </div>
+      {game.guesses.length > 0 && (
+        <div>
+          Incorrect guesses so far:
+          <br />
+          {game.guesses.map((v, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && `, `}
+              <BoldItalic>{v}</BoldItalic>
+            </React.Fragment>
+          ))}
+        </div>
+      )}
     </>
   );
 }
