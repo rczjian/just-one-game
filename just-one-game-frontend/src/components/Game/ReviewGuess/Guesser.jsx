@@ -7,6 +7,7 @@ import {
   ControlsContainer,
   CustomTable,
   CustomAlert,
+  InlineError,
 } from "../../common-components";
 import AnswerModal from "./AnswerModal";
 import RevealModal from "./RevealModal";
@@ -15,6 +16,7 @@ import EndModal from "./EndModal";
 export default function Guesser({ game, clientId, gameHandlers }) {
   const { handleAnswer, handleReveal, handleEnd } = gameHandlers;
   const [answer, setAnswer] = React.useState("");
+  const [multiword, setMultiword] = React.useState(false);
   const [showAnswer, setShowAnswer] = React.useState(false);
   const [showReveal, setShowReveal] = React.useState(false);
   const [showEnd, setShowEnd] = React.useState(false);
@@ -52,9 +54,27 @@ export default function Guesser({ game, clientId, gameHandlers }) {
       )}
       <Prompt>Input your guess:</Prompt>
       <ControlsContainer>
-        <Input value={answer} onChange={(e) => setAnswer(e.target.value)} />
-        <Button onClick={() => setShowAnswer(true)}>Submit</Button>
+        <Input
+          value={answer}
+          onChange={(e) => {
+            setAnswer(e.target.value);
+            setMultiword(false);
+          }}
+        />
+        <Button
+          onClick={() => {
+            if (/\s/.test(answer.trim())) {
+              setMultiword(true);
+            } else {
+              setAnswer(answer.trim());
+              setShowAnswer(true);
+            }
+          }}
+        >
+          Submit
+        </Button>
       </ControlsContainer>
+      {multiword && <InlineError>Only one word is allowed.</InlineError>}
       <ControlsContainer>
         <Button
           variant="outline-primary"

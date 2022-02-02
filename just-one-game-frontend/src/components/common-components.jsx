@@ -70,3 +70,11 @@ export const CustomListGroup = styled(ListGroup)`
     padding: 0.25rem 1rem;
   }
 `;
+
+export const InlineError = styled.div`
+  text-align: left;
+  padding: 0px 8px;
+  width: 100%;
+  font-size: small;
+  color: red;
+`;

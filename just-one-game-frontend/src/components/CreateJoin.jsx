@@ -26,7 +26,7 @@ export default function CreateJoin({
               setJoinError(false);
             }}
           />
-          <Button onClick={() => handleJoin(roomCode.toUpperCase())}>
+          <Button onClick={() => handleJoin(roomCode.trim().toUpperCase())}>
             Join this room
           </Button>
           {joinError && (

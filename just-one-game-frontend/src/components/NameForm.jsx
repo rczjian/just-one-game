@@ -8,7 +8,7 @@ export default function NameForm({ handleSetName }) {
     <Container>
       <FormLabel>Welcome! Enter your name:</FormLabel>
       <CustomFormControl onChange={(e) => setName(e.target.value)} />
-      <Button onClick={() => handleSetName(name)}>Submit</Button>
+      <Button onClick={() => handleSetName(name.trim())}>Submit</Button>
     </Container>
   );
 }

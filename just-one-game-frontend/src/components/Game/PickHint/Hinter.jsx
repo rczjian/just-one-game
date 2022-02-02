@@ -6,6 +6,7 @@ import {
   BoldItalic,
   ControlsContainer,
   CustomListGroup,
+  InlineError,
 } from "../../common-components";
 import styled from "styled-components";
 import SubmitModal from "./SubmitModal";
@@ -13,6 +14,7 @@ import SubmitModal from "./SubmitModal";
 export default function Hinter({ game, clientId, gameHandlers }) {
   const { handleHint } = gameHandlers;
   const [hint, setHint] = React.useState("");
+  const [multiword, setMultiword] = React.useState(false);
   const [showSubmit, setShowSubmit] = React.useState(false);
   return (
     <>
@@ -61,9 +63,27 @@ export default function Hinter({ game, clientId, gameHandlers }) {
           <>
             <Prompt>Input your hint:</Prompt>
             <ControlsContainer>
-              <Input onChange={(e) => setHint(e.target.value)} />
-              <Button onClick={() => setShowSubmit(true)}>Submit</Button>
+              <Input
+                value={hint}
+                onChange={(e) => {
+                  setHint(e.target.value);
+                  setMultiword(false);
+                }}
+              />
+              <Button
+                onClick={() => {
+                  if (/\s/.test(hint.trim())) {
+                    setMultiword(true);
+                  } else {
+                    setHint(hint.trim());
+                    setShowSubmit(true);
+                  }
+                }}
+              >
+                Submit
+              </Button>
             </ControlsContainer>
+            {multiword && <InlineError>Only one word is allowed.</InlineError>}
           </>
         )
       ) : null}
