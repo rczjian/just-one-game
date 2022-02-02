@@ -489,6 +489,34 @@ const handleAction = ({ res, clients, games }) => {
     });
     console.log(`broadcasted end stage for game ${res.data.gameId}`);
   }
+
+  if (res.action === "again") {
+    games[res.data.gameId].stage = "init";
+    delete games[res.data.gameId].guesser;
+    delete games[res.data.gameId].words;
+    delete games[res.data.gameId].picked;
+    delete games[res.data.gameId].hints;
+    delete games[res.data.gameId].guesses;
+    delete games[res.data.gameId].success;
+
+    const allPlayers = games[res.data.gameId].players.map(
+      (v) => clients[v.clientId]
+    );
+    const broadcast = {
+      action: "broadcast-again",
+      data: {
+        info: `${clients[clientId].name} started a new round`,
+        game: games[res.data.gameId],
+      },
+    };
+
+    broadcastTo({
+      players: allPlayers,
+      game: games[res.data.gameId],
+      broadcast,
+    });
+    console.log(`broadcasted init stage for game ${res.data.gameId}`);
+  }
 };
 
 const handleWsClose = ({ clients, games, clientId }) => {

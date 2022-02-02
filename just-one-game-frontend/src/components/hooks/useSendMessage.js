@@ -156,6 +156,17 @@ export default function useSendMessage({ clientId, ws }) {
     ws.current.send(JSON.stringify(payload));
   };
 
+  const handleAgain = (roomCode) => {
+    const payload = {
+      action: "again",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
+  };
+
   return {
     handleSetName,
     handleCreate,
@@ -171,5 +182,6 @@ export default function useSendMessage({ clientId, ws }) {
     handleAnswer,
     handleReveal,
     handleEnd,
+    handleAgain,
   };
 }

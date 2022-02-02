@@ -9,6 +9,7 @@ import styled from "styled-components";
 import AgainModal from "./AgainModal";
 
 export default function End({ game, clientId, gameHandlers }) {
+  const { handleAgain } = gameHandlers;
   const [showAgain, setShowAgain] = React.useState(false);
   return (
     <>
@@ -52,18 +53,19 @@ export default function End({ game, clientId, gameHandlers }) {
               </CustomTable>
             </Accordion.Body>
           </Accordion.Item>
-          <Accordion.Item eventKey="2">
-            <Accordion.Header>Guesses</Accordion.Header>
-            <Accordion.Body>
-              {game.guesses.length === 0 && `No guesses made`}
-              {game.guesses.map((v, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && `, `}
-                  <BoldItalic>{v}</BoldItalic>
-                </React.Fragment>
-              ))}
-            </Accordion.Body>
-          </Accordion.Item>
+          {game.guesses.length > 0 && (
+            <Accordion.Item eventKey="2">
+              <Accordion.Header>Guesses</Accordion.Header>
+              <Accordion.Body>
+                {game.guesses.map((v, i) => (
+                  <React.Fragment key={i}>
+                    {i > 0 && `, `}
+                    <BoldItalic>{v}</BoldItalic>
+                  </React.Fragment>
+                ))}
+              </Accordion.Body>
+            </Accordion.Item>
+          )}
         </Accordion>
       </AccordionWrapper>
 
@@ -73,7 +75,10 @@ export default function End({ game, clientId, gameHandlers }) {
       <AgainModal
         visible={showAgain}
         onCancel={() => setShowAgain(false)}
-        onProceed={() => setShowAgain(false)}
+        onProceed={() => {
+          handleAgain(game.id);
+          setShowAgain(false);
+        }}
       />
     </>
   );
