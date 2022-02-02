@@ -5,12 +5,20 @@ export default function useGameState() {
     clientId: undefined,
     ws: "LOADING",
   });
+  const setStatus = (status) =>
+    setConnection((prevState) => {
+      return {
+        ...prevState,
+        ws: status,
+      };
+    });
   const [gameState, setGameState] = React.useState({
     view: "setName",
   });
   const [joinError, setJoinError] = React.useState(false);
 
   const handleMessage = (message) => {
+    setStatus("OPEN");
     if (message.action === "connect") {
       if (message.clientId !== null) {
         setConnection((prevState) => {
@@ -104,6 +112,7 @@ export default function useGameState() {
   return {
     connection,
     setConnection,
+    setStatus,
     gameState,
     handleMessage,
     joinError,

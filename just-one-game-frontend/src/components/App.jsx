@@ -13,6 +13,7 @@ export default function App() {
   const {
     connection,
     setConnection,
+    setStatus,
     gameState,
     handleMessage,
     joinError,
@@ -23,6 +24,7 @@ export default function App() {
     useSendMessage({
       clientId: connection.clientId,
       ws,
+      setStatus,
     });
   console.log("connection", connection);
   console.log("gameState", gameState);

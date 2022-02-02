@@ -29,8 +29,9 @@ export default function ChangeModal({
           <>
             <div>You're not supposed to do this, but here you go:</div>
             <ButtonsContainer>
-              {oneToFive.map((v) => (
+              {oneToFive.map((v, i) => (
                 <Button
+                  key={i}
                   disabled={v === picked}
                   onClick={() => {
                     handlePick(v);

@@ -1,4 +1,4 @@
-export default function useSendMessage({ clientId, ws }) {
+export default function useSendMessage({ clientId, ws, setStatus }) {
   const handleSetName = (name) => {
     if (!name) {
       name = "nameless";
@@ -11,6 +11,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleCreate = () => {
@@ -19,6 +20,7 @@ export default function useSendMessage({ clientId, ws }) {
       clientId: clientId,
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleJoin = (roomCode) => {
@@ -30,6 +32,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleNext = (roomCode) => {
@@ -41,6 +44,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleStart = (roomCode) => {
@@ -52,6 +56,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handlePick = (roomCode, num) => {
@@ -64,6 +69,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleHint = (roomCode, hint) => {
@@ -76,6 +82,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleReview = (roomCode) => {
@@ -87,6 +94,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleCancel = (roomCode) => {
@@ -98,6 +106,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleRestore = (roomCode) => {
@@ -109,6 +118,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleAccept = (roomCode) => {
@@ -120,6 +130,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleAnswer = (roomCode, answer) => {
@@ -132,6 +143,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleReveal = (roomCode) => {
@@ -143,6 +155,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleEnd = (roomCode) => {
@@ -154,6 +167,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   const handleAgain = (roomCode) => {
@@ -165,6 +179,7 @@ export default function useSendMessage({ clientId, ws }) {
       },
     };
     ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
   };
 
   return {

@@ -12,7 +12,10 @@ export default function Hinter({ game, clientId, gameHandlers }) {
   const { handleCancel, handleRestore, handleAccept } = gameHandlers;
   return game.stage === "review" ? (
     <>
-      <div>Compare your hints!</div>
+      <div>
+        Compare your hints for{" "}
+        <BoldItalic>{game.words[game.picked - 1]}</BoldItalic>!
+      </div>
       <div>
         <CustomAlert variant="warning">
           Cancel your clue if it is identical to or similar to (e.g. plurals,
