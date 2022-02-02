@@ -552,6 +552,11 @@ const handleWsClose = ({ clients, games, clientId }) => {
             game.hints = game.hints.filter(
               (hint) => hint.clientId !== clientId
             );
+            if (game.stage === "review" && game.hints.length === 0) {
+              game.stage = "hint";
+              game.submitted = [];
+              delete game.accepted;
+            }
           }
           if (game.submitted?.length > 0) {
             game.submitted = game.submitted.filter((id) => id !== clientId);

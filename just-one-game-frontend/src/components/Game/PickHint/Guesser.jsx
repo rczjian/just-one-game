@@ -34,9 +34,16 @@ export default function Guesser({ game, clientId, gameHandlers }) {
       <WaitingContainer>
         {game.submitted.length >= game.players.length - 1 ? (
           <>
-            <div>All players have submitted their hints!</div>
+            <div>
+              {game.players.length < 2
+                ? `You need at least one more player.`
+                : `All players have submitted their hints!`}
+            </div>
             <GuessWrapper>
-              <Button onClick={() => handleReview(game.id)}>
+              <Button
+                disabled={game.players.length < 2}
+                onClick={() => handleReview(game.id)}
+              >
                 Proceed to guess
               </Button>
             </GuessWrapper>
