@@ -538,11 +538,26 @@ const handleWsClose = ({ clients, games, clientId }) => {
           if (game.next?.clientId === clientId) {
             delete game.next;
           }
-          if (game.guesser?.clientId === clientId) {
+          if (game.stage !== "end" && game.guesser?.clientId === clientId) {
             game.stage = "init";
             delete game.guesser;
             delete game.words;
             delete game.picked;
+            delete game.hints;
+            delete game.submitted;
+            delete game.accepted;
+            delete game.guesses;
+          }
+          if (game.hints?.length > 0) {
+            game.hints = game.hints.filter(
+              (hint) => hint.clientId !== clientId
+            );
+          }
+          if (game.submitted?.length > 0) {
+            game.submitted = game.submitted.filter((id) => id !== clientId);
+          }
+          if (game.accepted?.length > 0) {
+            game.accepted = game.accepted.filter((id) => id !== clientId);
           }
 
           const remainingPlayers = game.players.map((v) => clients[v.clientId]);
