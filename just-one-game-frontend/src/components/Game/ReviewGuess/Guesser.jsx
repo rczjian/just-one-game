@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "react-bootstrap";
+import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import {
   Prompt,
   Input,
@@ -34,7 +34,18 @@ export default function Guesser({ game, clientId, gameHandlers }) {
             <React.Fragment key={i}>
               <tr>
                 <td>{v.name}</td>
-                <td>{!game.reveal && v.cancelled ? "█████" : v.hint}</td>
+                <td>
+                  {!game.reveal && v.cancelled ? (
+                    <OverlayTrigger
+                      placement="right"
+                      overlay={<Tooltip>Cancelled</Tooltip>}
+                    >
+                      <span style={{ letterSpacing: "-0.25px" }}>█████</span>
+                    </OverlayTrigger>
+                  ) : (
+                    <span>{v.hint}</span>
+                  )}
+                </td>
               </tr>
             </React.Fragment>
           ))}

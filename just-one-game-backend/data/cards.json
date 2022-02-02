@@ -1,5 +1,5 @@
 [
-  ["word one", "word two", "word three", "word four", "word five"],
-  ["word 1", "word 2", "word 3", "word 4", "word 5"],
-  ["word 1ne", "word 2wo", "word 3hree", "word 4our", "word 5ive"]
+  ["one", "two", "three", "four", "five"],
+  ["1", "2", "3", "4", "5"],
+  ["1ne", "2wo", "3hree", "4our", "5ive"]
 ]
