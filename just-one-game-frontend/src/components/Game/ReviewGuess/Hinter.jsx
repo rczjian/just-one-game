@@ -52,13 +52,15 @@ export default function Hinter({ game, clientId, gameHandlers }) {
           </tbody>
         </CustomTable>
       </div>
-      <Button
-        size="sm"
-        onClick={() => handleAccept(game.id)}
-        disabled={game.accepted.includes(clientId)}
-      >
-        Accept
-      </Button>
+      {game.hints.some((v) => v.clientId === clientId) && (
+        <Button
+          size="sm"
+          onClick={() => handleAccept(game.id)}
+          disabled={game.accepted.includes(clientId)}
+        >
+          Accept
+        </Button>
+      )}
     </>
   ) : (
     <>

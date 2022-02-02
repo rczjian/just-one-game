@@ -358,8 +358,8 @@ const handleAction = ({ res, clients, games }) => {
     games[res.data.gameId].accepted.push(clientId);
 
     if (
-      games[res.data.gameId].accepted.length >=
-      games[res.data.gameId].players.length - 1
+      games[res.data.gameId].accepted.length ===
+      games[res.data.gameId].hints.length
     ) {
       games[res.data.gameId].stage = "guess";
       games[res.data.gameId].guesses = [];
