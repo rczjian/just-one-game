@@ -1,1 +1,1 @@
-web: cd just-one-game-backend && npm install && npm start
+web: cd just-one-game-backend && npm start

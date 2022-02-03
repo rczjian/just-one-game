@@ -2,7 +2,7 @@ import React from "react";
 
 export default function useWebSocket({ setConnection, handleMessage }) {
   const ws = React.useRef(null);
-  const host = process.env.HOST || "192.168.1.75:8080";
+  const host = process.env.REACT_APP_BACKEND_HOST || "192.168.1.75:8080";
 
   React.useEffect(() => {
     ws.current = new WebSocket(`ws://${host}`);
