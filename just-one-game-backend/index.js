@@ -1,7 +1,8 @@
 const http = require("http");
 const WebSocketServer = require("websocket").server;
 const httpServer = http.createServer();
-httpServer.listen(8081, () => console.log("Listening on 8081..."));
+const port = process.env.PORT || 8080;
+httpServer.listen(port, () => console.log(`Listening on port ${port}...`));
 
 // state
 const clients = {};
