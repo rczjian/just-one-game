@@ -1,1 +1,1 @@
-web: cd just-one-game-backend && npm start
+web: yarn workspace just-one-game-backend start
