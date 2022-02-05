@@ -69,10 +69,13 @@ const handleAction = ({ res, clients, games }) => {
 
   if (res.action === "create") {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let gameId = "";
-    for (let i = 0; i < 6; i++) {
-      gameId += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+    let gameId;
+    do {
+      gameId = "";
+      for (let i = 0; i < 6; i++) {
+        gameId += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+    } while (games[gameId]);
 
     games[gameId] = {
       id: gameId,
@@ -145,7 +148,7 @@ const handleAction = ({ res, clients, games }) => {
     con.send(JSON.stringify(payload));
   }
 
-  if (res.action === "next") {
+  if (res.action === "next" && games[res.data.gameId].stage === "init") {
     let payload = {};
     if (true) {
       const otherPlayers = games[res.data.gameId].players
@@ -191,7 +194,7 @@ const handleAction = ({ res, clients, games }) => {
     con.send(JSON.stringify(payload));
   }
 
-  if (res.action === "start") {
+  if (res.action === "start" && games[res.data.gameId].stage === "init") {
     games[res.data.gameId].stage = "pick";
     games[res.data.gameId].guesser = games[res.data.gameId].next;
     delete games[res.data.gameId].next;
@@ -218,7 +221,7 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted game start for game ${res.data.gameId}`);
   }
 
-  if (res.action === "pick") {
+  if (res.action === "pick" && games[res.data.gameId].stage === "pick") {
     games[res.data.gameId].picked = res.data.picked;
     games[res.data.gameId].stage = "hint";
     games[res.data.gameId].hints = [];
@@ -244,7 +247,7 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted pick for game ${res.data.gameId}`);
   }
 
-  if (res.action === "hint") {
+  if (res.action === "hint" && games[res.data.gameId].stage === "hint") {
     games[res.data.gameId].hints = [
       ...games[res.data.gameId].hints,
       { clientId, name: clients[clientId].name, hint: res.data.hint },
@@ -274,7 +277,7 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted new hint for game ${res.data.gameId}`);
   }
 
-  if (res.action === "review") {
+  if (res.action === "review" && games[res.data.gameId].stage === "hint") {
     games[res.data.gameId].stage = "review";
     games[res.data.gameId].accepted = [];
     delete games[res.data.gameId].submitted;
@@ -299,7 +302,7 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted review stage for game ${res.data.gameId}`);
   }
 
-  if (res.action === "cancel") {
+  if (res.action === "cancel" && games[res.data.gameId].stage === "review") {
     const hintIdx = games[res.data.gameId].hints.findIndex(
       (v) => v.clientId === clientId
     );
@@ -327,7 +330,7 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted hint cancellation for game ${res.data.gameId}`);
   }
 
-  if (res.action === "restore") {
+  if (res.action === "restore" && games[res.data.gameId].stage === "review") {
     const hintIdx = games[res.data.gameId].hints.findIndex(
       (v) => v.clientId === clientId
     );
@@ -354,7 +357,7 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted hint restoration for game ${res.data.gameId}`);
   }
 
-  if (res.action === "accept") {
+  if (res.action === "accept" && games[res.data.gameId].stage === "review") {
     games[res.data.gameId].accepted.push(clientId);
 
     if (
@@ -403,7 +406,7 @@ const handleAction = ({ res, clients, games }) => {
     }
   }
 
-  if (res.action === "answer") {
+  if (res.action === "answer" && games[res.data.gameId].stage === "guess") {
     games[res.data.gameId].guesses.push(res.data.answer);
 
     const allPlayers = games[res.data.gameId].players.map(
@@ -445,7 +448,7 @@ const handleAction = ({ res, clients, games }) => {
     });
   }
 
-  if (res.action === "reveal") {
+  if (res.action === "reveal" && games[res.data.gameId].stage === "guess") {
     games[res.data.gameId].reveal = true;
 
     const allPlayers = games[res.data.gameId].players.map(
@@ -467,7 +470,7 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted hint reveal for game ${res.data.gameId}`);
   }
 
-  if (res.action === "end") {
+  if (res.action === "end" && games[res.data.gameId].stage === "guess") {
     games[res.data.gameId].stage = "end";
     games[res.data.gameId].success = false;
 
@@ -490,7 +493,7 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted end stage for game ${res.data.gameId}`);
   }
 
-  if (res.action === "again") {
+  if (res.action === "again" && games[res.data.gameId].stage === "end") {
     games[res.data.gameId].stage = "init";
     delete games[res.data.gameId].guesser;
     delete games[res.data.gameId].words;
