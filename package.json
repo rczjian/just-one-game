@@ -2,6 +2,8 @@
   "name": "just-one-game",
   "private": true,
   "scripts": {
+    "heroku-prebuild": "npm install -g serve",
+    "build": "yarn workspace just-one-game-frontend build",
     "start:frontend": "yarn workspace just-one-game-frontend start",
     "start:backend": "yarn workspace just-one-game-backend start:dev"
   },

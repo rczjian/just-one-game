@@ -1,1 +1,1 @@
-web: yarn workspace just-one-game-frontend start
+web: serve -s just-one-game-frontend/build
