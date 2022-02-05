@@ -221,7 +221,12 @@ const handleAction = ({ res, clients, games }) => {
     console.log(`broadcasted game start for game ${res.data.gameId}`);
   }
 
-  if (res.action === "pick" && games[res.data.gameId].stage === "pick") {
+  if (
+    res.action === "pick" &&
+    (games[res.data.gameId].stage === "pick" ||
+      (games[res.data.gameId].stage === "hint" &&
+        games[res.data.gameId].hints.length === 0))
+  ) {
     games[res.data.gameId].picked = res.data.picked;
     games[res.data.gameId].stage = "hint";
     games[res.data.gameId].hints = [];
