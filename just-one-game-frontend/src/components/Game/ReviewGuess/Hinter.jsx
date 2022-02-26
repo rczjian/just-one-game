@@ -122,5 +122,6 @@ const BadgeButton = styled(Button)`
 const Text = styled.span`
   word-break: break-word;
   text-decoration: ${(props) =>
-    props.strikethrough ? "2px line-through" : "none"};
+    props.strikethrough ? "line-through" : "none"};
+  text-decoration-thickness: 2px;
 `;
