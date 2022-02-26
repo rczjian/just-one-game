@@ -53,6 +53,40 @@ const broadcastTo = ({ players, game, broadcast }) => {
   });
 };
 
+const removeFromGame = ({ clientId, game }) => {
+  game.players = game.players.filter((v) => v.clientId !== clientId);
+  console.log(`removed ${clientId} from game ${game.id}`);
+
+  if (game.next?.clientId === clientId) {
+    delete game.next;
+  }
+  if (game.stage !== "end" && game.guesser?.clientId === clientId) {
+    game.stage = "init";
+    delete game.guesser;
+    delete game.words;
+    delete game.picked;
+    delete game.hints;
+    delete game.submitted;
+    delete game.accepted;
+    delete game.guesses;
+    delete game.reveal;
+  }
+  if (game.hints?.length > 0) {
+    game.hints = game.hints.filter((hint) => hint.clientId !== clientId);
+    if (game.stage === "review" && game.hints.length === 0) {
+      game.stage = "hint";
+      game.submitted = [];
+      delete game.accepted;
+    }
+  }
+  if (game.submitted?.length > 0) {
+    game.submitted = game.submitted.filter((id) => id !== clientId);
+  }
+  if (game.accepted?.length > 0) {
+    game.accepted = game.accepted.filter((id) => id !== clientId);
+  }
+};
+
 const handleAction = ({ res, clients, games }) => {
   const clientId = res.clientId;
   const con = clients[clientId].connection;
@@ -532,49 +566,16 @@ const handleWsClose = ({ clients, games, clientId }) => {
   console.log("=====================================");
   console.log(`connection for clientId ${clientId} closed`);
   if (clientId) {
-    const name = clients[clientId].name;
-    delete clients[clientId];
-    console.log(`deleted ${clientId} from client list`);
     Object.values(games).forEach((game) => {
-      const initLength = game.players.length;
-      game.players = game.players.filter((v) => v.clientId !== clientId);
-      if (initLength > game.players.length) {
-        console.log(`removed ${clientId} from game ${game.id}`);
+      if (game.players.some((v) => v.clientId === clientId)) {
+        removeFromGame({ clientId, game });
         if (game.players.length === 0) {
           delete games[game.id];
           console.log(`closed game ${game.id} due to lack of players`);
         } else {
-          if (game.next?.clientId === clientId) {
-            delete game.next;
-          }
-          if (game.stage !== "end" && game.guesser?.clientId === clientId) {
-            game.stage = "init";
-            delete game.guesser;
-            delete game.words;
-            delete game.picked;
-            delete game.hints;
-            delete game.submitted;
-            delete game.accepted;
-            delete game.guesses;
-            delete game.reveal;
-          }
-          if (game.hints?.length > 0) {
-            game.hints = game.hints.filter(
-              (hint) => hint.clientId !== clientId
-            );
-            if (game.stage === "review" && game.hints.length === 0) {
-              game.stage = "hint";
-              game.submitted = [];
-              delete game.accepted;
-            }
-          }
-          if (game.submitted?.length > 0) {
-            game.submitted = game.submitted.filter((id) => id !== clientId);
-          }
-          if (game.accepted?.length > 0) {
-            game.accepted = game.accepted.filter((id) => id !== clientId);
-          }
-
+          const name = clients[clientId].name;
+          delete clients[clientId];
+          console.log(`deleted ${clientId} from client list`);
           const remainingPlayers = game.players.map((v) => clients[v.clientId]);
           const broadcast = {
             action: "broadcast-disconnect",
