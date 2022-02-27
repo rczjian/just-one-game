@@ -85,6 +85,10 @@ const removeFromGame = ({ clientId, game }) => {
   if (game.accepted?.length > 0) {
     game.accepted = game.accepted.filter((id) => id !== clientId);
   }
+  game.players.forEach(
+    (player) =>
+      (player.kick = player.kick.filter((v) => v.clientId !== clientId))
+  );
 };
 
 const handleAction = ({ res, clients, games }) => {
