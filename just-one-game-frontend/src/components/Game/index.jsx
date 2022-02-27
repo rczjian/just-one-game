@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { CustomBadge } from "../common-components";
 import HowTo from "./HowTo";
 import Content from "./Content";
+import Kick from "./Kick";
 
 export default function Game({ game, clientId, gameHandlers }) {
   const [showHowTo, setShowHowTo] = React.useState(false);
@@ -21,7 +22,14 @@ export default function Game({ game, clientId, gameHandlers }) {
             {player.name}
             {player.clientId === clientId ? (
               <CustomBadge bg="secondary">YOU!</CustomBadge>
-            ) : null}
+            ) : (
+              <Kick
+                game={game}
+                clientId={clientId}
+                player={player}
+                gameHandlers={gameHandlers}
+              />
+            )}
           </div>
         ))}
       </PlayersContainer>

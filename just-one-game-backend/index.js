@@ -59,6 +59,6 @@ wsServer.on("request", (req) => {
     process.stdout.write("clients = ");
     console.dir(Object.values(clients), { depth: 1 });
     process.stdout.write("games = ");
-    console.dir(Object.values(games), { depth: 3 });
+    console.dir(Object.values(games), { depth: 5 });
   });
 });

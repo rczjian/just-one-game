@@ -113,7 +113,7 @@ const handleAction = ({ res, clients, games }) => {
 
     games[gameId] = {
       id: gameId,
-      players: [{ clientId, name: clients[clientId].name }],
+      players: [{ clientId, name: clients[clientId].name, kick: [] }],
       stage: "init",
     };
 
@@ -154,6 +154,7 @@ const handleAction = ({ res, clients, games }) => {
       games[res.data.gameId].players.push({
         clientId,
         name: clients[clientId].name,
+        kick: [],
       });
       payload = {
         action: "join",
@@ -560,11 +561,85 @@ const handleAction = ({ res, clients, games }) => {
     });
     console.log(`broadcasted init stage for game ${res.data.gameId}`);
   }
+
+  if (res.action === "kick") {
+    const kickIdx = games[res.data.gameId].players.findIndex(
+      (v) => v.clientId === res.data.kickId
+    );
+    if (res.data.kick) {
+      games[res.data.gameId].players[kickIdx].kick = [
+        ...games[res.data.gameId].players[kickIdx].kick,
+        { clientId, name: clients[clientId].name },
+      ];
+    } else {
+      games[res.data.gameId].players[kickIdx].kick = games[
+        res.data.gameId
+      ].players[kickIdx].kick.filter((v) => v.clientId !== res.clientId);
+    }
+
+    if (
+      Math.max(2, Math.round(games[res.data.gameId].players.length / 2)) <=
+      games[res.data.gameId].players[kickIdx].kick.length
+    ) {
+      removeFromGame({
+        clientId: res.data.kickId,
+        game: games[res.data.gameId],
+      });
+
+      const payload = {
+        action: "kick",
+        data: { info: `${clients[res.data.kickId].name} has been kicked` },
+      };
+      clients[res.data.kickId].connection.send(JSON.stringify(payload));
+
+      const remainingPlayers = games[res.data.gameId].players.map(
+        (v) => clients[v.clientId]
+      );
+      const broadcast = {
+        action: "broadcast-kick",
+        data: {
+          info: `${clients[res.data.kickId].name} has been kicked`,
+          game: games[res.data.gameId],
+        },
+      };
+      broadcastTo({
+        players: remainingPlayers,
+        game: games[res.data.gameId],
+        broadcast,
+      });
+    } else {
+      const allPlayers = games[res.data.gameId].players.map(
+        (v) => clients[v.clientId]
+      );
+      const broadcast = {
+        action: "broadcast-kick",
+        data: {
+          info: res.data.kick
+            ? `${clients[clientId].name} voted to kick ${
+                clients[res.data.kickId].name
+              }`
+            : `${clients[clientId].name} retracted their vote to kick ${
+                clients[res.data.kickId].name
+              }`,
+          game: games[res.data.gameId],
+        },
+      };
+      broadcastTo({
+        players: allPlayers,
+        game: games[res.data.gameId],
+        broadcast,
+      });
+    }
+    console.log(`broadcasted kick for game ${res.data.gameId}`);
+  }
 };
 
 const handleWsClose = ({ clients, games, clientId }) => {
   console.log("=====================================");
   console.log(`connection for clientId ${clientId} closed`);
+  const name = clients[clientId].name;
+  delete clients[clientId];
+  console.log(`deleted ${clientId} from client list`);
   if (clientId) {
     Object.values(games).forEach((game) => {
       if (game.players.some((v) => v.clientId === clientId)) {
@@ -573,9 +648,6 @@ const handleWsClose = ({ clients, games, clientId }) => {
           delete games[game.id];
           console.log(`closed game ${game.id} due to lack of players`);
         } else {
-          const name = clients[clientId].name;
-          delete clients[clientId];
-          console.log(`deleted ${clientId} from client list`);
           const remainingPlayers = game.players.map((v) => clients[v.clientId]);
           const broadcast = {
             action: "broadcast-disconnect",

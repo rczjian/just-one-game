@@ -182,6 +182,20 @@ export default function useSendMessage({ clientId, ws, setStatus }) {
     setStatus("LOADING");
   };
 
+  const handleKick = (roomCode, kickId, kick) => {
+    const payload = {
+      action: "kick",
+      clientId: clientId,
+      data: {
+        gameId: roomCode,
+        kickId,
+        kick,
+      },
+    };
+    ws.current.send(JSON.stringify(payload));
+    setStatus("LOADING");
+  };
+
   return {
     handleSetName,
     handleCreate,
@@ -198,5 +212,6 @@ export default function useSendMessage({ clientId, ws, setStatus }) {
     handleReveal,
     handleEnd,
     handleAgain,
+    handleKick,
   };
 }

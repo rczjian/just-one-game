@@ -83,6 +83,16 @@ export default function useGameState() {
       }
     }
 
+    if (message.action === "kick") {
+      setGameState((prevState) => {
+        return {
+          view: "create-join",
+          name: prevState.name,
+        };
+      });
+      console.log(message.data.info);
+    }
+
     if (
       message.action === "broadcast-join" ||
       message.action === "broadcast-next" ||
@@ -97,7 +107,8 @@ export default function useGameState() {
       message.action === "broadcast-guess" ||
       message.action === "broadcast-reveal" ||
       message.action === "broadcast-end" ||
-      message.action === "broadcast-again"
+      message.action === "broadcast-again" ||
+      message.action === "broadcast-kick"
     ) {
       setGameState((prevState) => {
         return {
